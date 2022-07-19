@@ -1,4 +1,4 @@
-import { IUserRepository } from "../adapters/IUserRepository";
+import { IUserRepository } from "../repositories/IContactRepository";
 
 export interface ILoginPageProps {
   userRepository: IUserRepository;

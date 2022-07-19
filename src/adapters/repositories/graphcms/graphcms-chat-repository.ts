@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { GetAllChatsQueryDocument } from "../../../graphql/generatedCodegen";
-import { IChatRepository } from "../../../interfaces/adapters/IChatRepository";
+import { IChatRepository } from "../../../interfaces/repositories/IChatRepository";
 import { IChatQuery } from "../../../interfaces/queries/IChatQuery";
 import { apolloClient } from "../../../libs/ApolloLib";
 

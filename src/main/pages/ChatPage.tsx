@@ -1,31 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import chatContactName from "../../factories/chatContactName";
 
 // Interfaces
 import { IChatPage } from "../../interfaces/components/IChatPage";
-import { IChatQuery } from "../../interfaces/queries/IChatQuery";
+import { IContactQuery } from "../../interfaces/queries/IContactQuery";
 
 /*
   Get All Chats não é o use case certo, pois não queremos que um contato veja a conversa de todos os contatos.
   Então deverá ser feito uma requisição do user logado e através de tal tabela pegar os chats relacionados.
 */
 
-export function ChatPage({ findAllChats }: IChatPage) {
+export function ChatPage({ findContactByUsernameUsecase }: IChatPage) {
   const { chat_id } = useParams<{ chat_id: string }>();
 
-  const [allChats, setAllChats] = useState<IChatQuery[]>([]);
+  const [loggedContactDataState, setLoggedContactDataState] =
+    useState<IContactQuery | null>(null);
 
   useEffect(() => {
-    async function loadChats() {
-      const chats = await (await findAllChats.Handle())();
+    async function loadLoggedContact() {
+      const userLoggedUsername = "guilherme-henrique8845";
+      const loggedContact = await findContactByUsernameUsecase.Handler(
+        userLoggedUsername,
+      );
 
-      setAllChats(chats);
+      setLoggedContactDataState(loggedContact);
     }
 
-    loadChats();
+    loadLoggedContact();
   }, []);
-
-  console.log(allChats);
 
   return (
     <div className="ChatPage">
@@ -34,7 +37,29 @@ export function ChatPage({ findAllChats }: IChatPage) {
       </header>
 
       <div className="ChatPage__content">
-        <aside>chats</aside>
+        <aside>
+          {loggedContactDataState ? (
+            <div>
+              {loggedContactDataState.chats.map((chat) => {
+                const contactName = chatContactName(
+                  chat.contacts,
+                  loggedContactDataState.name,
+                );
+
+                return (
+                  <div key={chat.messages[0].text}>
+                    <h2>{contactName}</h2>
+                    <p>{chat.messages[chat.messages.length - 1].text}</p>
+
+                    <br />
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <h1>Loading...</h1>
+          )}
+        </aside>
         <main>selectedChat</main>
       </div>
     </div>

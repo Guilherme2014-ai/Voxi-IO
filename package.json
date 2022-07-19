@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --mode development",
     "codegen": "graphql-codegen",
     "build": "webpack --config ./webpack/webpack.config.ts",
     "deploy": "gh-pages -b gh-pages -d dist"

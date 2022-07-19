@@ -1,4 +1,7 @@
+import { IChatQuery } from "./IChatQuery";
+
 export interface IContactQuery {
   name: string;
-  profile_picture_url: string;
+  username: string;
+  chats: IChatQuery[];
 }

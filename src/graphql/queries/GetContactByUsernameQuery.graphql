@@ -1,0 +1,15 @@
+query GetContactByUsernameQuery($username: String!) {
+    contact(where: { username: $username }) {
+        name
+        username
+
+        chats {
+            contacts {
+                name
+            }
+            messages {
+                text
+            }
+        }
+    }
+}

@@ -2,9 +2,9 @@ import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { config } from "../config";
 const { ApiContentUrl } = config;
 
-// notion
-// env --> Done
-// github
+// Notion
+// Env --> Done
+// Github --> Done
 
 export const apolloClient = new ApolloClient({
   uri: ApiContentUrl,

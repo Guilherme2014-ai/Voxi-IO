@@ -1,5 +1,5 @@
-import { IFindAllChats } from "../usecases/IFindAllChats";
+import { IFindContactByUsername } from "../usecases/IFindContactByUsername";
 
 export interface IChatPage {
-  findAllChats: IFindAllChats;
+  findContactByUsernameUsecase: IFindContactByUsername;
 }

@@ -4891,6 +4891,13 @@ export type GetAllChatsQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetAllChatsQueryQuery = { __typename?: 'Query', chats: Array<{ __typename?: 'Chat', contacts: Array<{ __typename?: 'Contact', name: string, username: string, profile_picture_url?: string | null }>, messages: Array<{ __typename?: 'Message', text: string }> }> };
 
+export type GetContactByUsernameQueryQueryVariables = Exact<{
+  username: Scalars['String'];
+}>;
+
+
+export type GetContactByUsernameQueryQuery = { __typename?: 'Query', contact?: { __typename?: 'Contact', name: string, username: string, chats: Array<{ __typename?: 'Chat', contacts: Array<{ __typename?: 'Contact', name: string }>, messages: Array<{ __typename?: 'Message', text: string }> }> } | null };
+
 
 export const GetAllChatsQueryDocument = gql`
     query getAllChatsQuery {
@@ -4933,3 +4940,47 @@ export function useGetAllChatsQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type GetAllChatsQueryQueryHookResult = ReturnType<typeof useGetAllChatsQueryQuery>;
 export type GetAllChatsQueryLazyQueryHookResult = ReturnType<typeof useGetAllChatsQueryLazyQuery>;
 export type GetAllChatsQueryQueryResult = Apollo.QueryResult<GetAllChatsQueryQuery, GetAllChatsQueryQueryVariables>;
+export const GetContactByUsernameQueryDocument = gql`
+    query GetContactByUsernameQuery($username: String!) {
+  contact(where: {username: $username}) {
+    name
+    username
+    chats {
+      contacts {
+        name
+      }
+      messages {
+        text
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetContactByUsernameQueryQuery__
+ *
+ * To run a query within a React component, call `useGetContactByUsernameQueryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetContactByUsernameQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetContactByUsernameQueryQuery({
+ *   variables: {
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function useGetContactByUsernameQueryQuery(baseOptions: Apollo.QueryHookOptions<GetContactByUsernameQueryQuery, GetContactByUsernameQueryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetContactByUsernameQueryQuery, GetContactByUsernameQueryQueryVariables>(GetContactByUsernameQueryDocument, options);
+      }
+export function useGetContactByUsernameQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetContactByUsernameQueryQuery, GetContactByUsernameQueryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetContactByUsernameQueryQuery, GetContactByUsernameQueryQueryVariables>(GetContactByUsernameQueryDocument, options);
+        }
+export type GetContactByUsernameQueryQueryHookResult = ReturnType<typeof useGetContactByUsernameQueryQuery>;
+export type GetContactByUsernameQueryLazyQueryHookResult = ReturnType<typeof useGetContactByUsernameQueryLazyQuery>;
+export type GetContactByUsernameQueryQueryResult = Apollo.QueryResult<GetContactByUsernameQueryQuery, GetContactByUsernameQueryQueryVariables>;

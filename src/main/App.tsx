@@ -13,7 +13,7 @@ import "./style/app.scss";
 
 function App() {
   // Pega valor do Provider
-  const { findAllChatsUsecase } = getProviderValue();
+  const { findContactByUsernameUsecase } = getProviderValue();
 
   return (
     <div className="App">
@@ -22,7 +22,11 @@ function App() {
           <Route path="/" element={<h1>Teste</h1>} />
           <Route
             path="chat/:chat_id"
-            element={<ChatPage findAllChats={findAllChatsUsecase} />}
+            element={
+              <ChatPage
+                findContactByUsernameUsecase={findContactByUsernameUsecase}
+              />
+            }
           />
         </Routes>
       </Router>
