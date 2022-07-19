@@ -1,0 +1,1 @@
+## nivel responsavel de usar as entities e adapters

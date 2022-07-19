@@ -1,0 +1,12 @@
+query getAllChatsQuery {
+    chats {
+        contacts {
+            name
+            username
+            profile_picture_url
+        }
+        messages {
+            text
+        }
+    }
+}
