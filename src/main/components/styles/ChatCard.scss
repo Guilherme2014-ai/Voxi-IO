@@ -1,0 +1,19 @@
+.chatCard {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    margin-top: 25px;
+
+    .chatCard__contactInfo {
+        display: flex;
+        align-items: center;
+
+        span {
+            font-family: 'Public Sans', sans-serif;
+            font-size: 0.9rem;
+
+            margin-left: 8px;
+        }
+    }
+}

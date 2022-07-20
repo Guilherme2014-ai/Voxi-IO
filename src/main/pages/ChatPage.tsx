@@ -1,6 +1,5 @@
 import React, { Dispatch, useEffect, useState } from "react";
 import { NavigateFunction, useNavigate, useParams } from "react-router";
-import chatContactName from "../../factories/chatContactName";
 
 // Interfaces
 import { IChatPage } from "../../interfaces/components/IChatPage";
@@ -8,6 +7,12 @@ import { IChatQuery } from "../../interfaces/queries/IChatQuery";
 import { IContactQuery } from "../../interfaces/queries/IContactQuery";
 import IFindChatByID from "../../interfaces/usecases/IFindChatByID";
 import { IFindContactByUsername } from "../../interfaces/usecases/IFindContactByUsername";
+import { ChatCardComponent } from "../components/ChatCardComponent";
+import { ChatPageNavBarComponent } from "../components/ChatPageNavBarComponent";
+import ChatSearch from "../components/icons/ChatSearch";
+
+// CSS
+import "./styles/ChatPage.scss";
 
 /*
   Get All Chats não é o use case certo, pois não queremos que um contato veja a conversa de todos os contatos.
@@ -23,7 +28,7 @@ export function ChatPage({
 
   const [loggedContactDataState, setLoggedContactDataState] =
     useState<IContactQuery | null>(null);
-  const { chat_id } = useParams<{ chat_id: string }>();
+  const { chat_id: selectedChatId } = useParams<{ chat_id: string }>();
 
   const [selectedChatDataState, setSelectedChatDataState] =
     useState<IChatQuery | null>(null);
@@ -31,7 +36,7 @@ export function ChatPage({
   useLoadSelectedChat(
     setSelectedChatDataState,
     findChatByIDUsecase,
-    chat_id as string,
+    selectedChatId as string,
   );
 
   useLoadLoggedContactData(
@@ -39,40 +44,52 @@ export function ChatPage({
     findContactByUsernameUsecase,
   );
 
-  console.log(selectedChatDataState);
-
   return (
     <div className="ChatPage">
       <header>
-        <nav>n a v</nav>
+        <ChatPageNavBarComponent />
       </header>
 
       <div className="ChatPage__content">
         <aside>
-          {loggedContactDataState ? (
-            <div>
-              {loggedContactDataState.chats.map((chat) => {
-                const contactName = chatContactName(
-                  chat.contacts,
-                  loggedContactDataState.name,
-                );
+          <div className="aside_content">
+            <h2>Messages</h2>
 
-                return (
-                  <div
-                    key={chat.messages[0].text}
-                    onClick={() => changeSelectedChat(chat.id)}
-                  >
-                    <h2>{contactName}</h2>
-                    <p>{chat.messages[chat.messages.length - 1].text}</p>
-
-                    <br />
-                  </div>
-                );
-              })}
+            <div className="aside_content__searchGroup">
+              <form>
+                <div className="aside_content__inputArea">
+                  <ChatSearch />
+                  <input
+                    type="text"
+                    className="aside_content__inputArea"
+                    name="aside_content__inputArea"
+                    id="aside_content__inputArea"
+                  />
+                </div>
+                <button>CHAT +</button>
+              </form>
             </div>
-          ) : (
-            <h1>Loading...</h1>
-          )}
+
+            <div className="aside_content__chats">
+              {loggedContactDataState ? (
+                <div>
+                  {loggedContactDataState.chats.map((chat) => {
+                    const isSelected = chat.id === selectedChatId;
+
+                    return (
+                      <ChatCardComponent
+                        chat={chat}
+                        loggedContactUsername={loggedContactDataState.username}
+                        isSelected={isSelected}
+                      />
+                    );
+                  })}
+                </div>
+              ) : (
+                <h1>Loading...</h1>
+              )}
+            </div>
+          </div>
         </aside>
         <main>selectedChat</main>
       </div>
@@ -103,11 +120,11 @@ function useLoadLoggedContactData(
 function useLoadSelectedChat(
   setSelectedChatDataState: Dispatch<React.SetStateAction<IChatQuery | null>>,
   findChatByIDUsecase: IFindChatByID,
-  chat_id: string,
+  selectedChatId: string,
 ) {
   useEffect(() => {
     async function loadSelectedChatData() {
-      const chat = await findChatByIDUsecase.Handler(chat_id as string);
+      const chat = await findChatByIDUsecase.Handler(selectedChatId as string);
 
       setSelectedChatDataState(chat);
     }
