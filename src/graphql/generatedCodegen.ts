@@ -4896,7 +4896,7 @@ export type GetContactByUsernameQueryQueryVariables = Exact<{
 }>;
 
 
-export type GetContactByUsernameQueryQuery = { __typename?: 'Query', contact?: { __typename?: 'Contact', name: string, username: string, chats: Array<{ __typename?: 'Chat', contacts: Array<{ __typename?: 'Contact', name: string }>, messages: Array<{ __typename?: 'Message', text: string }> }> } | null };
+export type GetContactByUsernameQueryQuery = { __typename?: 'Query', contact?: { __typename?: 'Contact', name: string, username: string, chats: Array<{ __typename?: 'Chat', id: string, contacts: Array<{ __typename?: 'Contact', name: string }>, messages: Array<{ __typename?: 'Message', text: string }> }> } | null };
 
 
 export const GetAllChatsQueryDocument = gql`
@@ -4946,6 +4946,7 @@ export const GetContactByUsernameQueryDocument = gql`
     name
     username
     chats {
+      id
       contacts {
         name
       }

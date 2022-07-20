@@ -4,6 +4,7 @@ query GetContactByUsernameQuery($username: String!) {
         username
 
         chats {
+            id
             contacts {
                 name
             }

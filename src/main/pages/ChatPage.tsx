@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import React, { Dispatch, useEffect, useState } from "react";
+import { NavigateFunction, useNavigate, useParams } from "react-router";
 import chatContactName from "../../factories/chatContactName";
 
 // Interfaces
 import { IChatPage } from "../../interfaces/components/IChatPage";
 import { IContactQuery } from "../../interfaces/queries/IContactQuery";
+import { IFindContactByUsername } from "../../interfaces/usecases/IFindContactByUsername";
 
 /*
   Get All Chats não é o use case certo, pois não queremos que um contato veja a conversa de todos os contatos.
@@ -12,23 +13,17 @@ import { IContactQuery } from "../../interfaces/queries/IContactQuery";
 */
 
 export function ChatPage({ findContactByUsernameUsecase }: IChatPage) {
-  const { chat_id } = useParams<{ chat_id: string }>();
+  const navigate = useNavigate();
+  const changeSelectedChat = ChangerSelectedChat(navigate);
 
   const [loggedContactDataState, setLoggedContactDataState] =
     useState<IContactQuery | null>(null);
+  const { chat_id } = useParams<{ chat_id: string }>();
 
-  useEffect(() => {
-    async function loadLoggedContact() {
-      const userLoggedUsername = "guilherme-henrique8845";
-      const loggedContact = await findContactByUsernameUsecase.Handler(
-        userLoggedUsername,
-      );
-
-      setLoggedContactDataState(loggedContact);
-    }
-
-    loadLoggedContact();
-  }, []);
+  useLoadLoggedContactData(
+    setLoggedContactDataState,
+    findContactByUsernameUsecase,
+  );
 
   return (
     <div className="ChatPage">
@@ -47,7 +42,10 @@ export function ChatPage({ findContactByUsernameUsecase }: IChatPage) {
                 );
 
                 return (
-                  <div key={chat.messages[0].text}>
+                  <div
+                    key={chat.messages[0].text}
+                    onClick={() => changeSelectedChat(chat.id)}
+                  >
                     <h2>{contactName}</h2>
                     <p>{chat.messages[chat.messages.length - 1].text}</p>
 
@@ -65,3 +63,26 @@ export function ChatPage({ findContactByUsernameUsecase }: IChatPage) {
     </div>
   );
 }
+
+function useLoadLoggedContactData(
+  setLoggedContactDataState: Dispatch<
+    React.SetStateAction<IContactQuery | null>
+  >,
+  findContactByUsernameUsecase: IFindContactByUsername,
+) {
+  useEffect(() => {
+    async function loadLoggedContact() {
+      const userLoggedUsername = "guilherme-henrique8845"; // Esta informação será tirada do localStorage
+      const loggedContact = await findContactByUsernameUsecase.Handler(
+        userLoggedUsername,
+      );
+
+      setLoggedContactDataState(loggedContact);
+    }
+
+    loadLoggedContact();
+  }, []);
+}
+const ChangerSelectedChat =
+  (navigate: NavigateFunction) => (clickedChatId: string) =>
+    navigate(`/chat/${clickedChatId}`);
