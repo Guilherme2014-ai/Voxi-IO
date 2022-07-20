@@ -4891,6 +4891,13 @@ export type GetAllChatsQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetAllChatsQueryQuery = { __typename?: 'Query', chats: Array<{ __typename?: 'Chat', contacts: Array<{ __typename?: 'Contact', name: string, username: string, profile_picture_url?: string | null }>, messages: Array<{ __typename?: 'Message', text: string }> }> };
 
+export type GetChatByIdQueryQueryVariables = Exact<{
+  chat_id: Scalars['ID'];
+}>;
+
+
+export type GetChatByIdQueryQuery = { __typename?: 'Query', chat?: { __typename?: 'Chat', contacts: Array<{ __typename?: 'Contact', name: string, profile_picture_url?: string | null, bio?: string | null }>, messages: Array<{ __typename?: 'Message', text: string, contactSenderUsername: string }> } | null };
+
 export type GetContactByUsernameQueryQueryVariables = Exact<{
   username: Scalars['String'];
 }>;
@@ -4940,6 +4947,49 @@ export function useGetAllChatsQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type GetAllChatsQueryQueryHookResult = ReturnType<typeof useGetAllChatsQueryQuery>;
 export type GetAllChatsQueryLazyQueryHookResult = ReturnType<typeof useGetAllChatsQueryLazyQuery>;
 export type GetAllChatsQueryQueryResult = Apollo.QueryResult<GetAllChatsQueryQuery, GetAllChatsQueryQueryVariables>;
+export const GetChatByIdQueryDocument = gql`
+    query getChatByIDQuery($chat_id: ID!) {
+  chat(where: {id: $chat_id}) {
+    contacts {
+      name
+      profile_picture_url
+      bio
+    }
+    messages {
+      text
+      contactSenderUsername
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetChatByIdQueryQuery__
+ *
+ * To run a query within a React component, call `useGetChatByIdQueryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetChatByIdQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetChatByIdQueryQuery({
+ *   variables: {
+ *      chat_id: // value for 'chat_id'
+ *   },
+ * });
+ */
+export function useGetChatByIdQueryQuery(baseOptions: Apollo.QueryHookOptions<GetChatByIdQueryQuery, GetChatByIdQueryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetChatByIdQueryQuery, GetChatByIdQueryQueryVariables>(GetChatByIdQueryDocument, options);
+      }
+export function useGetChatByIdQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetChatByIdQueryQuery, GetChatByIdQueryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetChatByIdQueryQuery, GetChatByIdQueryQueryVariables>(GetChatByIdQueryDocument, options);
+        }
+export type GetChatByIdQueryQueryHookResult = ReturnType<typeof useGetChatByIdQueryQuery>;
+export type GetChatByIdQueryLazyQueryHookResult = ReturnType<typeof useGetChatByIdQueryLazyQuery>;
+export type GetChatByIdQueryQueryResult = Apollo.QueryResult<GetChatByIdQueryQuery, GetChatByIdQueryQueryVariables>;
 export const GetContactByUsernameQueryDocument = gql`
     query GetContactByUsernameQuery($username: String!) {
   contact(where: {username: $username}) {

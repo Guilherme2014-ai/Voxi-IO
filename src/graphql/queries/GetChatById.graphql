@@ -1,0 +1,13 @@
+query getChatByIDQuery($chat_id: ID!) {
+    chat(where: {id: $chat_id}) {
+        contacts {
+            name
+            profile_picture_url
+            bio
+        }
+        messages {
+            text
+            contactSenderUsername
+        }
+    }
+}

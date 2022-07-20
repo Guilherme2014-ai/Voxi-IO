@@ -4,7 +4,9 @@ import chatContactName from "../../factories/chatContactName";
 
 // Interfaces
 import { IChatPage } from "../../interfaces/components/IChatPage";
+import { IChatQuery } from "../../interfaces/queries/IChatQuery";
 import { IContactQuery } from "../../interfaces/queries/IContactQuery";
+import IFindChatByID from "../../interfaces/usecases/IFindChatByID";
 import { IFindContactByUsername } from "../../interfaces/usecases/IFindContactByUsername";
 
 /*
@@ -12,7 +14,10 @@ import { IFindContactByUsername } from "../../interfaces/usecases/IFindContactBy
   Então deverá ser feito uma requisição do user logado e através de tal tabela pegar os chats relacionados.
 */
 
-export function ChatPage({ findContactByUsernameUsecase }: IChatPage) {
+export function ChatPage({
+  findContactByUsernameUsecase,
+  findChatByIDUsecase,
+}: IChatPage) {
   const navigate = useNavigate();
   const changeSelectedChat = ChangerSelectedChat(navigate);
 
@@ -20,10 +25,21 @@ export function ChatPage({ findContactByUsernameUsecase }: IChatPage) {
     useState<IContactQuery | null>(null);
   const { chat_id } = useParams<{ chat_id: string }>();
 
+  const [selectedChatDataState, setSelectedChatDataState] =
+    useState<IChatQuery | null>(null);
+
+  useLoadSelectedChat(
+    setSelectedChatDataState,
+    findChatByIDUsecase,
+    chat_id as string,
+  );
+
   useLoadLoggedContactData(
     setLoggedContactDataState,
     findContactByUsernameUsecase,
   );
+
+  console.log(selectedChatDataState);
 
   return (
     <div className="ChatPage">
@@ -83,6 +99,23 @@ function useLoadLoggedContactData(
     loadLoggedContact();
   }, []);
 }
+
+function useLoadSelectedChat(
+  setSelectedChatDataState: Dispatch<React.SetStateAction<IChatQuery | null>>,
+  findChatByIDUsecase: IFindChatByID,
+  chat_id: string,
+) {
+  useEffect(() => {
+    async function loadSelectedChatData() {
+      const chat = await findChatByIDUsecase.Handler(chat_id as string);
+
+      setSelectedChatDataState(chat);
+    }
+
+    loadSelectedChatData();
+  }, []);
+}
+
 const ChangerSelectedChat =
   (navigate: NavigateFunction) => (clickedChatId: string) =>
     navigate(`/chat/${clickedChatId}`);
