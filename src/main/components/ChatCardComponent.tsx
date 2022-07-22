@@ -3,13 +3,14 @@ import Avatar from "@mui/material/Avatar";
 
 // Interfaces
 import { IChatQuery } from "../../interfaces/queries/IChatQuery";
-
+/*
 // Factories
-import { contactChatByUsername } from "../../factories/contactChatByUsername";
+import { contactChatByUsername } from "../../factories/contactChatByUsername";*/
 
 // CSS
 import "./styles/ChatCard.scss";
 import { NavigateFunction, useNavigate } from "react-router";
+import { LastMessageComponent } from "./LastMessageComponent";
 
 export function ChatCardComponent({
   chat,
@@ -30,6 +31,9 @@ export function ChatCardComponent({
   const navigate = useNavigate();
   const setSelectedChat = ChangerSelectedChat(navigate);
 
+  /*const messages = chat.messages;
+  const lastMessage = messages[messages.length - 1].text || "";*/
+
   return (
     <div className="chatCard" onClick={() => setSelectedChat(chat.id)}>
       <div className="chatCard__contactInfo">
@@ -45,6 +49,11 @@ export function ChatCardComponent({
         </div>
         <span>{contact.name}</span>
       </div>
+
+      <LastMessageComponent
+        isTextMessageType={true}
+        messageText={"Oi Sumido, como vai ?"}
+      />
     </div>
   );
 }

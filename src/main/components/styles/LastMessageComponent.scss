@@ -1,0 +1,35 @@
+@import "../../style/variables";
+
+.lastMessageComponent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100px;
+    margin-left: 10px;
+
+    .lastMessageComponent__unReadMessagesLength {
+        border-radius: 50%;
+        background-color: $mainColor;
+        width: 15px;
+        height: 15px;
+
+        text-align: center;
+        font-size: 10px;
+
+        color: white;
+
+        padding-top: 2px;
+    }
+    .lastMessageComponent__messageContent {
+        width: 78px;
+        word-wrap: break-word;
+
+        font-family: "Roboto", sans-serif;
+        font-size: 0.7rem;
+
+        text-align: center;
+        word-wrap: break-word;
+    }
+    .lastMessageComponent__icon {}
+}

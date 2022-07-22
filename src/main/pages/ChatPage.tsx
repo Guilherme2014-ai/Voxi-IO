@@ -9,7 +9,7 @@ import IFindChatByID from "../../interfaces/usecases/IFindChatByID";
 import { IFindContactByUsername } from "../../interfaces/usecases/IFindContactByUsername";
 import { ChatCardComponent } from "../components/ChatCardComponent";
 import { ChatPageNavBarComponent } from "../components/ChatPageNavBarComponent";
-import ChatSearch from "../components/icons/ChatSearch";
+import { ChatSearchIcon } from "../components/icons/ChatSearchIcon";
 
 // CSS
 import "./styles/ChatPage.scss";
@@ -58,7 +58,7 @@ export function ChatPage({
             <div className="aside_content__searchGroup">
               <form>
                 <div className="aside_content__inputArea">
-                  <ChatSearch />
+                  <ChatSearchIcon />
                   <input
                     type="text"
                     className="aside_content__inputArea"
@@ -78,6 +78,7 @@ export function ChatPage({
 
                     return (
                       <ChatCardComponent
+                        key={chat.id}
                         chat={chat}
                         loggedContactUsername={loggedContactDataState.username}
                         isSelected={isSelected}

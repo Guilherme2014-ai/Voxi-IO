@@ -1,5 +1,6 @@
 .chatCard {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     cursor: pointer;
 
@@ -11,7 +12,7 @@
 
         span {
             font-family: 'Public Sans', sans-serif;
-            font-size: 0.9rem;
+            font-size: 0.6rem;
 
             margin-left: 8px;
         }

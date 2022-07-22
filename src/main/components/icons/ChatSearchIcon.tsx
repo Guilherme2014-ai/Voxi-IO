@@ -1,6 +1,6 @@
 import React from "react";
 
-function ChatSearch() {
+export function ChatSearchIcon() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -16,5 +16,3 @@ function ChatSearch() {
     </svg>
   );
 }
-
-export default ChatSearch;
