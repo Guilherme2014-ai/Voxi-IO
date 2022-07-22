@@ -11,6 +11,8 @@ import { contactChatByUsername } from "../../factories/contactChatByUsername";*/
 import "./styles/ChatCard.scss";
 import { NavigateFunction, useNavigate } from "react-router";
 import { LastMessageComponent } from "./LastMessageComponent";
+import { contactChatByUsername } from "../../factories/contactChatByUsername";
+import { IContactQuery } from "../../interfaces/queries/IContactQuery";
 
 export function ChatCardComponent({
   chat,
@@ -21,13 +23,16 @@ export function ChatCardComponent({
   loggedContactUsername: string;
   isSelected: boolean;
 }) {
-  /*
-    const contactChat = chatContactName(
-                    chat.contacts,
-                    loggedContactDataState.name,
-                  );
-    */
-  const contact = chat.contacts[0];
+  // Quado este component carregar tenho certeza de que o localStorage não estará vazio
+  const locaStorageLoggedContact = JSON.parse(
+    localStorage.getItem("loggedContact") as any,
+  ) as IContactQuery;
+
+  const contactChat = contactChatByUsername(
+    chat.contacts,
+    locaStorageLoggedContact.username,
+  );
+
   const navigate = useNavigate();
   const setSelectedChat = ChangerSelectedChat(navigate);
 
@@ -40,14 +45,14 @@ export function ChatCardComponent({
         <div className="chatCard__contactInfo__avatarArea">
           <Avatar
             alt="Contact Avatar"
-            src={contact.profile_picture_url}
+            src={contactChat.profile_picture_url}
             style={{
               width: "30px",
               height: "30px",
             }}
           />{" "}
         </div>
-        <span>{contact.name}</span>
+        <span>{contactChat.name}</span>
       </div>
 
       <LastMessageComponent

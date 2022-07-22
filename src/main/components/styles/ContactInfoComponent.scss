@@ -1,0 +1,27 @@
+.contactInfo {
+    display: flex;
+    align-items: center;
+
+    width: 200px;
+
+    .contactInfo__name-bio {
+        display: flex;
+        flex-direction: column;
+
+        margin-left: 14px;
+
+        h1, p {
+            font-family: 'Public Sans', sans-serif;
+        }
+
+        h1 {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        p {
+            margin-top: 4px;
+            font-size: 0.6rem;
+            color: #A1A1A1;
+        }
+    }
+}

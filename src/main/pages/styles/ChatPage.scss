@@ -93,6 +93,13 @@
         }
         main {
             flex: 2;
+
+            .chatContent__main__chatHeader {
+                height: 100px;
+                margin-top: 10px;
+
+                padding: 18px 22px;
+            }
         }
     }
 }

@@ -1,5 +1,5 @@
 import React, { Dispatch, useEffect, useState } from "react";
-import { NavigateFunction, useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 
 // Interfaces
 import { IChatPage } from "../../interfaces/components/IChatPage";
@@ -9,6 +9,7 @@ import IFindChatByID from "../../interfaces/usecases/IFindChatByID";
 import { IFindContactByUsername } from "../../interfaces/usecases/IFindContactByUsername";
 import { ChatCardComponent } from "../components/ChatCardComponent";
 import { ChatPageNavBarComponent } from "../components/ChatPageNavBarComponent";
+import { ContactInfoComponent } from "../components/ContactInfoComponent";
 import { ChatSearchIcon } from "../components/icons/ChatSearchIcon";
 
 // CSS
@@ -23,13 +24,10 @@ export function ChatPage({
   findContactByUsernameUsecase,
   findChatByIDUsecase,
 }: IChatPage) {
-  const navigate = useNavigate();
-  const changeSelectedChat = ChangerSelectedChat(navigate);
+  const { chat_id: selectedChatId } = useParams<{ chat_id: string }>();
 
   const [loggedContactDataState, setLoggedContactDataState] =
     useState<IContactQuery | null>(null);
-  const { chat_id: selectedChatId } = useParams<{ chat_id: string }>();
-
   const [selectedChatDataState, setSelectedChatDataState] =
     useState<IChatQuery | null>(null);
 
@@ -43,6 +41,14 @@ export function ChatPage({
     setLoggedContactDataState,
     findContactByUsernameUsecase,
   );
+
+  if (loggedContactDataState)
+    localStorage.setItem(
+      "loggedContact",
+      JSON.stringify(loggedContactDataState),
+    );
+
+  // console.log(selectedChatDataState);
 
   return (
     <div className="ChatPage">
@@ -92,7 +98,22 @@ export function ChatPage({
             </div>
           </div>
         </aside>
-        <main>selectedChat</main>
+        <main>
+          {selectedChatDataState && loggedContactDataState ? (
+            <>
+              <div className="chatContent__main__chatHeader">
+                <ContactInfoComponent selectedChat={selectedChatDataState} />
+                <br />
+                <hr />
+              </div>
+              <div className="chatContent__main__chatContent">message</div>
+            </>
+          ) : (
+            <div>
+              <h1>ssss</h1>
+            </div>
+          )}
+        </main>
       </div>
     </div>
   );
@@ -131,9 +152,5 @@ function useLoadSelectedChat(
     }
 
     loadSelectedChatData();
-  }, []);
+  });
 }
-
-const ChangerSelectedChat =
-  (navigate: NavigateFunction) => (clickedChatId: string) =>
-    navigate(`/chat/${clickedChatId}`);
