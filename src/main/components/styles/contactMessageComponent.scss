@@ -1,0 +1,24 @@
+@import "../../style/variables";
+
+.contactMessageArea {
+    margin: 30px 0;
+    padding: 0 23px;
+
+    .contactMessage {
+        display: flex;
+        align-items: center;
+
+        .contactMessage__contentArea {
+            display: flex;
+
+            border-radius: 7px;
+            border: solid 1px $mainColor;
+
+            margin: 0 14px;
+            align-items: center;
+            padding: 8px 8px;
+
+            .contactMessage__content {}
+        }
+    }
+}

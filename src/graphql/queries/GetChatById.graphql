@@ -2,6 +2,7 @@ query getChatByIDQuery($chat_id: ID!) {
     chat(where: {id: $chat_id}) {
         contacts {
             name
+            username
             profile_picture_url
             bio
         }

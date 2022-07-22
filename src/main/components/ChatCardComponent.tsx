@@ -23,24 +23,33 @@ export function ChatCardComponent({
   loggedContactUsername: string;
   isSelected: boolean;
 }) {
-  // Quado este component carregar tenho certeza de que o localStorage não estará vazio
-  const locaStorageLoggedContact = JSON.parse(
-    localStorage.getItem("loggedContact") as any,
-  ) as IContactQuery;
-
   const contactChat = contactChatByUsername(
     chat.contacts,
-    locaStorageLoggedContact.username,
+    loggedContactUsername,
   );
 
   const navigate = useNavigate();
   const setSelectedChat = ChangerSelectedChat(navigate);
 
-  /*const messages = chat.messages;
-  const lastMessage = messages[messages.length - 1].text || "";*/
+  const messages = chat.messages;
+  const lastMessage =
+    messages.length > 1
+      ? `${messages[messages.length - 1].text.substring(4)}...`
+      : "";
+
+  const selectConfig: React.CSSProperties | undefined = isSelected
+    ? {
+        boxShadow: "#7879F1 0px 0px 8px",
+        transform: "scale(1.1)",
+      }
+    : {};
 
   return (
-    <div className="chatCard" onClick={() => setSelectedChat(chat.id)}>
+    <div
+      className="chatCard"
+      onClick={() => setSelectedChat(chat.id)}
+      style={{ ...selectConfig }}
+    >
       <div className="chatCard__contactInfo">
         <div className="chatCard__contactInfo__avatarArea">
           <Avatar
@@ -57,7 +66,7 @@ export function ChatCardComponent({
 
       <LastMessageComponent
         isTextMessageType={true}
-        messageText={"Oi Sumido, como vai ?"}
+        messageText={lastMessage}
       />
     </div>
   );

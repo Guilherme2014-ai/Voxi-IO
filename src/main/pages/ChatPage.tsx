@@ -1,3 +1,4 @@
+import { idUniqueV2 } from "id-unique-protocol";
 import React, { Dispatch, useEffect, useState } from "react";
 import { useParams } from "react-router";
 
@@ -10,6 +11,7 @@ import { IFindContactByUsername } from "../../interfaces/usecases/IFindContactBy
 import { ChatCardComponent } from "../components/ChatCardComponent";
 import { ChatPageNavBarComponent } from "../components/ChatPageNavBarComponent";
 import { ContactInfoComponent } from "../components/ContactInfoComponent";
+import { ContactMessageComponent } from "../components/ContactMessageComponent";
 import { ChatSearchIcon } from "../components/icons/ChatSearchIcon";
 
 // CSS
@@ -47,8 +49,6 @@ export function ChatPage({
       "loggedContact",
       JSON.stringify(loggedContactDataState),
     );
-
-  // console.log(selectedChatDataState);
 
   return (
     <div className="ChatPage">
@@ -106,7 +106,16 @@ export function ChatPage({
                 <br />
                 <hr />
               </div>
-              <div className="chatContent__main__chatContent">message</div>
+              <div className="chatContent__main__chatContent">
+                {selectedChatDataState.messages.map((message) => (
+                  <ContactMessageComponent
+                    key={idUniqueV2()}
+                    contactLogged={loggedContactDataState}
+                    chatContacts={selectedChatDataState.contacts}
+                    message={message}
+                  />
+                ))}
+              </div>
             </>
           ) : (
             <div>
