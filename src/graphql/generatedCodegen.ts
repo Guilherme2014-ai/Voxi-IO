@@ -4886,6 +4886,15 @@ export enum _SystemDateTimeFieldVariation {
   Localization = 'localization'
 }
 
+export type CreateNewMessageMutationVariables = Exact<{
+  messageText: Scalars['String'];
+  contactSenderUsername: Scalars['String'];
+  chat_id: Scalars['ID'];
+}>;
+
+
+export type CreateNewMessageMutation = { __typename?: 'Mutation', createMessage?: { __typename?: 'Message', text: string, contactSenderUsername: string } | null };
+
 export type GetAllChatsQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -4906,6 +4915,44 @@ export type GetContactByUsernameQueryQueryVariables = Exact<{
 export type GetContactByUsernameQueryQuery = { __typename?: 'Query', contact?: { __typename?: 'Contact', name: string, username: string, chats: Array<{ __typename?: 'Chat', id: string, contacts: Array<{ __typename?: 'Contact', name: string, profile_picture_url?: string | null }>, messages: Array<{ __typename?: 'Message', text: string }> }> } | null };
 
 
+export const CreateNewMessageDocument = gql`
+    mutation CreateNewMessage($messageText: String!, $contactSenderUsername: String!, $chat_id: ID!) {
+  createMessage(
+    data: {text: $messageText, contactSenderUsername: $contactSenderUsername, cl5po8uvy2cr601ul2mfa2356: {connect: {id: $chat_id}}}
+  ) {
+    text
+    contactSenderUsername
+  }
+}
+    `;
+export type CreateNewMessageMutationFn = Apollo.MutationFunction<CreateNewMessageMutation, CreateNewMessageMutationVariables>;
+
+/**
+ * __useCreateNewMessageMutation__
+ *
+ * To run a mutation, you first call `useCreateNewMessageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateNewMessageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createNewMessageMutation, { data, loading, error }] = useCreateNewMessageMutation({
+ *   variables: {
+ *      messageText: // value for 'messageText'
+ *      contactSenderUsername: // value for 'contactSenderUsername'
+ *      chat_id: // value for 'chat_id'
+ *   },
+ * });
+ */
+export function useCreateNewMessageMutation(baseOptions?: Apollo.MutationHookOptions<CreateNewMessageMutation, CreateNewMessageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateNewMessageMutation, CreateNewMessageMutationVariables>(CreateNewMessageDocument, options);
+      }
+export type CreateNewMessageMutationHookResult = ReturnType<typeof useCreateNewMessageMutation>;
+export type CreateNewMessageMutationResult = Apollo.MutationResult<CreateNewMessageMutation>;
+export type CreateNewMessageMutationOptions = Apollo.BaseMutationOptions<CreateNewMessageMutation, CreateNewMessageMutationVariables>;
 export const GetAllChatsQueryDocument = gql`
     query getAllChatsQuery {
   chats {

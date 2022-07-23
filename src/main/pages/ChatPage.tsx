@@ -25,6 +25,7 @@ import "./styles/ChatPage.scss";
 export function ChatPage({
   findContactByUsernameUsecase,
   findChatByIDUsecase,
+  createMessageUsecase,
 }: IChatPage) {
   const { chat_id: selectedChatId } = useParams<{ chat_id: string }>();
 
@@ -32,6 +33,19 @@ export function ChatPage({
     useState<IContactQuery | null>(null);
   const [selectedChatDataState, setSelectedChatDataState] =
     useState<IChatQuery | null>(null);
+
+  /*useEffect(() => {
+    async function test() {
+      if (selectedChatId)
+        await createMessageUsecase.Handle(
+          "Opa !",
+          "guilherme-henrique8845",
+          selectedChatId,
+        );
+    }
+
+    window.addEventListener("click", test);
+  }, []);*/
 
   useLoadSelectedChat(
     setSelectedChatDataState,
