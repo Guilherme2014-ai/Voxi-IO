@@ -36,12 +36,13 @@ export function ChatPage({
 
   /*useEffect(() => {
     async function test() {
-      if (selectedChatId)
-        await createMessageUsecase.Handle(
-          "Opa !",
+      if (selectedChatId) {
+        const messageCreated = await createMessageUsecase.Handle(
+          "Messagem nova",
           "guilherme-henrique8845",
           selectedChatId,
         );
+      }
     }
 
     window.addEventListener("click", test);

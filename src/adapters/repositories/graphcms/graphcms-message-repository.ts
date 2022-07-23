@@ -1,3 +1,4 @@
+import { gql } from "@apollo/client";
 import { CreateNewMessageDocument } from "../../../graphql/generatedCodegen";
 import { IMessageQuery } from "../../../interfaces/queries/IMessageQuery";
 import { IMessageRepository } from "../../../interfaces/repositories/IMessageRepository";
@@ -15,18 +16,25 @@ export class GraphcmsMessageRepository implements IMessageRepository {
       chat_id: chatId,
     };
 
-    console.log(mutationConfig);
-    const messageCreated = (
+    const createdMessage = (
       await apolloClient.mutate<{
-        message: IMessageQuery;
+        createMessage: IMessageQuery;
       }>({
         mutation: CreateNewMessageDocument,
         variables: mutationConfig,
       })
-    ).data?.message as IMessageQuery;
+    ).data?.createMessage as IMessageQuery;
 
-    console.log("messageCreated");
+    await apolloClient.mutate({
+      mutation: gql`
+        mutation PublicAllMessages {
+          publishManyMessages(to: PUBLISHED) {
+            count
+          }
+        }
+      `,
+    });
 
-    return messageCreated;
+    return createdMessage;
   }
 }
