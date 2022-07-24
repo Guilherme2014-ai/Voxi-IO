@@ -1,0 +1,44 @@
+.messageInputArea {
+    position: absolute;
+    bottom: 0;
+
+    width: 100%;
+    display: flex;
+
+    padding: 14px 14px;
+
+    .messageInputArea__messageInputForm {
+        flex: 1;
+        display: flex;
+
+        justify-content: space-between;
+
+        border: solid 1px #A5A6F6;
+        border-radius: 8px;
+
+        padding: 5px;
+
+        background-color: white;
+
+        .messageInputArea__messageInputForm__input {
+            flex: 4;
+            border: none;
+            outline: none;
+        }
+        .messageInputArea__messageInputForm__messageOptions {
+            flex: 1;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+
+            .messageSendIcon {
+                transition: all ease-in-out 0.3s;
+                cursor: pointer;
+                
+                &:hover {
+                    transform: scale(1.1);
+                }
+            }
+        }
+    }
+}

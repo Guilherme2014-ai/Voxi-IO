@@ -1,6 +1,7 @@
 import { idUniqueV2 } from "id-unique-protocol";
 import React, { Dispatch, useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { SendMessageUsecaseContext } from "../../adapters/context/SendMessageUsecase";
 
 // Interfaces
 import { IChatPage } from "../../interfaces/components/IChatPage";
@@ -13,6 +14,7 @@ import { ChatPageNavBarComponent } from "../components/ChatPageNavBarComponent";
 import { ContactInfoComponent } from "../components/ContactInfoComponent";
 import { ContactMessageComponent } from "../components/ContactMessageComponent";
 import { ChatSearchIcon } from "../components/icons/ChatSearchIcon";
+import { MessageInputComponent } from "../components/MessageInputComponent";
 
 // CSS
 import "./styles/ChatPage.scss";
@@ -66,80 +68,92 @@ export function ChatPage({
     );
 
   return (
-    <div className="ChatPage">
-      <header>
-        <ChatPageNavBarComponent />
-      </header>
+    <SendMessageUsecaseContext.Provider value={createMessageUsecase}>
+      <div className="ChatPage">
+        <header>
+          <ChatPageNavBarComponent />
+        </header>
 
-      <div className="ChatPage__content">
-        <aside>
-          <div className="aside_content">
-            <h2>Messages</h2>
+        <div className="ChatPage__content">
+          <aside>
+            <div className="aside_content">
+              <h2>Messages</h2>
 
-            <div className="aside_content__searchGroup">
-              <form>
-                <div className="aside_content__inputArea">
-                  <ChatSearchIcon />
-                  <input
-                    type="text"
-                    className="aside_content__inputArea"
-                    name="aside_content__inputArea"
-                    id="aside_content__inputArea"
-                  />
-                </div>
-                <button>CHAT +</button>
-              </form>
-            </div>
-
-            <div className="aside_content__chats">
-              {loggedContactDataState ? (
-                <div>
-                  {loggedContactDataState.chats.map((chat) => {
-                    const isSelected = chat.id === selectedChatId;
-
-                    return (
-                      <ChatCardComponent
-                        key={chat.id}
-                        chat={chat}
-                        loggedContactUsername={loggedContactDataState.username}
-                        isSelected={isSelected}
-                      />
-                    );
-                  })}
-                </div>
-              ) : (
-                <h1>Loading...</h1>
-              )}
-            </div>
-          </div>
-        </aside>
-        <main>
-          {selectedChatDataState && loggedContactDataState ? (
-            <>
-              <div className="chatContent__main__chatHeader">
-                <ContactInfoComponent selectedChat={selectedChatDataState} />
-                <br />
-                <hr />
+              <div className="aside_content__searchGroup">
+                <form>
+                  <div className="aside_content__inputArea">
+                    <ChatSearchIcon />
+                    <input
+                      type="text"
+                      className="aside_content__inputArea"
+                      name="aside_content__inputArea"
+                      id="aside_content__inputArea"
+                    />
+                  </div>
+                  <button>CHAT +</button>
+                </form>
               </div>
-              <div className="chatContent__main__chatContent">
-                {selectedChatDataState.messages.map((message) => (
-                  <ContactMessageComponent
-                    key={idUniqueV2()}
-                    contactLogged={loggedContactDataState}
-                    chatContacts={selectedChatDataState.contacts}
-                    message={message}
-                  />
-                ))}
+
+              <div className="aside_content__chats">
+                {loggedContactDataState ? (
+                  <div>
+                    {loggedContactDataState.chats.map((chat) => {
+                      const isSelected = chat.id === selectedChatId;
+
+                      return (
+                        <ChatCardComponent
+                          key={chat.id}
+                          chat={chat}
+                          loggedContactUsername={
+                            loggedContactDataState.username
+                          }
+                          isSelected={isSelected}
+                        />
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <h1>Loading...</h1>
+                )}
               </div>
-            </>
-          ) : (
-            <div>
-              <h1>ssss</h1>
             </div>
-          )}
-        </main>
+          </aside>
+          <main>
+            {selectedChatDataState &&
+            loggedContactDataState &&
+            selectedChatId ? (
+              <>
+                <div className="chatContent__main__chatHeader">
+                  <div className="coverBack"></div>
+                  <ContactInfoComponent selectedChat={selectedChatDataState} />
+                  <br />
+                  <hr />
+                </div>
+                <div className="chatContent__main__chatContent">
+                  {selectedChatDataState.messages.map((message) => (
+                    <ContactMessageComponent
+                      key={idUniqueV2()}
+                      contactLogged={loggedContactDataState}
+                      chatContacts={selectedChatDataState.contacts}
+                      message={message}
+                    />
+                  ))}
+                </div>
+
+                <MessageInputComponent
+                  selectedChatId={selectedChatId}
+                  loggedContactDataState={loggedContactDataState}
+                />
+              </>
+            ) : (
+              <div>
+                <h1>ssss</h1>
+              </div>
+            )}
+          </main>
+        </div>
       </div>
-    </div>
+    </SendMessageUsecaseContext.Provider>
   );
 }
 
