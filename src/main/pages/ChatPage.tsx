@@ -1,6 +1,6 @@
 import { idUniqueV2 } from "id-unique-protocol";
 import React, { Dispatch, useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { NavigateFunction, useNavigate, useParams } from "react-router";
 import { SendMessageUsecaseContext } from "../../adapters/context/SendMessageUsecase";
 
 // Interfaces
@@ -29,26 +29,13 @@ export function ChatPage({
   findChatByIDUsecase,
   createMessageUsecase,
 }: IChatPage) {
+  const navigate = useNavigate();
   const { chat_id: selectedChatId } = useParams<{ chat_id: string }>();
 
   const [loggedContactDataState, setLoggedContactDataState] =
     useState<IContactQuery | null>(null);
   const [selectedChatDataState, setSelectedChatDataState] =
     useState<IChatQuery | null>(null);
-
-  /*useEffect(() => {
-    async function test() {
-      if (selectedChatId) {
-        const messageCreated = await createMessageUsecase.Handle(
-          "Messagem nova",
-          "guilherme-henrique8845",
-          selectedChatId,
-        );
-      }
-    }
-
-    window.addEventListener("click", test);
-  }, []);*/
 
   useLoadSelectedChat(
     setSelectedChatDataState,
@@ -58,6 +45,7 @@ export function ChatPage({
 
   useLoadLoggedContactData(
     setLoggedContactDataState,
+    navigate,
     findContactByUsernameUsecase,
   );
 
@@ -146,9 +134,7 @@ export function ChatPage({
                 />
               </>
             ) : (
-              <div>
-                <h1>ssss</h1>
-              </div>
+              <div></div>
             )}
           </main>
         </div>
@@ -161,16 +147,27 @@ function useLoadLoggedContactData(
   setLoggedContactDataState: Dispatch<
     React.SetStateAction<IContactQuery | null>
   >,
+  navigate: NavigateFunction,
   findContactByUsernameUsecase: IFindContactByUsername,
 ) {
   useEffect(() => {
     async function loadLoggedContact() {
-      const userLoggedUsername = "guilherme-henrique8845"; // Esta informação será tirada do localStorage
-      const loggedContact = await findContactByUsernameUsecase.Handler(
-        userLoggedUsername,
-      );
+      try {
+        const userLoggedUsername = localStorage.getItem("contact_username"); // Esta informação será tirada do localStorage
 
-      setLoggedContactDataState(loggedContact);
+        if (userLoggedUsername) {
+          const loggedContact = await findContactByUsernameUsecase.Handler(
+            userLoggedUsername,
+          );
+
+          setLoggedContactDataState(loggedContact);
+        } else {
+          navigate("/");
+        }
+      } catch (e) {
+        alert(e);
+        console.error(e);
+      }
     }
 
     loadLoggedContact();

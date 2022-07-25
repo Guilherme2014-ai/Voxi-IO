@@ -16,7 +16,6 @@ export class CreateContactWithAuthenticator
   async Handler(): Promise<IContactQuery> {
     try {
       const contactMolde = await this.userAuthenticator.getUserInfo();
-
       contactMolde.username = slugfier(contactMolde.username as string);
 
       ContactEntity.Create(contactMolde, this.contactReporitory);

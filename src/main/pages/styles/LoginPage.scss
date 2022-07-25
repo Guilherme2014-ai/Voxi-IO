@@ -1,0 +1,80 @@
+.loginPage {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    
+    height: 100vh;
+
+    background-color: #F3F3FF;
+
+    .loginPage__content {
+        display: flex;
+        justify-content: center;
+
+        flex: 1;
+        max-width: 400px;
+        height: 600px;
+        border-radius: 10px;
+        box-shadow: #bebed1 0px 6px 8px;
+        background-color: white;
+        margin: 0 20px;
+
+        .voxiIOLogoImage {
+            flex: 1;
+            max-width: 300px;
+            display: flex;
+        
+            transform: translateY(-40px);
+        }
+
+        .loginPage__content__form__content__infoGroup {
+            display: flex;
+            align-items: center;
+
+            transform: translateY(-20px);
+            flex-direction: column;
+
+            h1 {
+                font-family: "Roboto", sans-serif;
+                font-weight: 400;
+                font-size: 1.4rem;
+
+                margin-bottom: 20px;
+            }
+
+            .loginPage__content__form__content__infoGroup__LoginMethode {
+                width: 270px;
+                height: 45px;
+                margin: 10px 0;
+
+                outline: none;
+                border-radius: 6px;
+                text-align: center;
+
+                font-family: "Roboto", sans-serif;
+                font-weight: 400;
+                font-size: 1rem;
+            }
+            .googleLoginMethode {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: #ED4447;
+                
+                border: none;
+                cursor: pointer;
+                transition: all ease-in-out 0.2s;
+
+                &:hover {
+                    transform: scale(1.02);
+                }
+
+                .googleIcon {
+                    width: 20px;
+                    margin-right: 10px;
+                }
+            }
+        }
+    }
+}

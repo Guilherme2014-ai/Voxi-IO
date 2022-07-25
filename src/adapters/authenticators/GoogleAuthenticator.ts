@@ -13,7 +13,7 @@ export class GoogleAuthenticator implements IUserAuthenticator {
     return {
       name: userInfo.user.displayName,
       username: userInfo.user.email,
-      number: 5565488,
+      number: userInfo.user.phoneNumber,
       avatarURL: userInfo.user.photoURL,
     } as any as IContactMolde;
   }

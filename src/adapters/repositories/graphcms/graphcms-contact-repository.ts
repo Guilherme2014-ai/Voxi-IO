@@ -7,25 +7,20 @@ import {
   GetContactByUsernameQueryDocument,
 } from "../../../graphql/generatedCodegen";
 import { IContactMolde } from "../../../interfaces/IContactMolde";
+import { gql } from "@apollo/client";
 
 export class GraphcmsContactRepository implements IContactRepository {
-  /*async Create(
-    name: string,
-    username: string,
-  ): { name: string; username: string } {
-    console.log("User created (mock)");
-    return { name, username };
-  }*/
   async findContactByUsername(username: string): Promise<IContactQuery> {
     try {
-      const contact = (
-        await apolloClient.query<{ contact: IContactQuery }>({
-          query: GetContactByUsernameQueryDocument,
-          variables: {
-            username,
-          },
-        })
-      ).data.contact;
+      const test = await apolloClient.query<{ contact: IContactQuery }>({
+        query: GetContactByUsernameQueryDocument,
+        variables: {
+          username,
+        },
+      });
+      const contact = test.data.contact;
+
+      console.log(username, test);
 
       return contact;
     } catch (e) {
@@ -59,6 +54,16 @@ export class GraphcmsContactRepository implements IContactRepository {
         variables: contactMolde,
       })
     ).data?.createContact as IContactQuery;
+
+    await apolloClient.mutate({
+      mutation: gql`
+        mutation PublicAllContacts {
+          publishManyContacts(to: PUBLISHED) {
+            count
+          }
+        }
+      `,
+    });
 
     return createdContact;
   }

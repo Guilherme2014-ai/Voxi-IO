@@ -10,7 +10,7 @@ export default (username: string) => {
 
     if (username == "")
       errors.push(new ErrorResponse("Username cant be null", 400));
-    if (username.length < 3 || username.length > 30)
+    if (username.length < 3 || username.length > 50)
       errors.push(new ErrorResponse("Username limits are required", 400));
 
     if (errors.length > 0) throw errors;
