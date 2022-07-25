@@ -20,8 +20,6 @@ export class GraphcmsContactRepository implements IContactRepository {
       });
       const contact = test.data.contact;
 
-      console.log(username, test);
-
       return contact;
     } catch (e) {
       throw e;

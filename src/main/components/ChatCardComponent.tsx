@@ -12,17 +12,23 @@ import "./styles/ChatCard.scss";
 import { NavigateFunction, useNavigate } from "react-router";
 import { LastMessageComponent } from "./LastMessageComponent";
 import { contactChatByUsername } from "../../factories/contactChatByUsername";
-import { IContactQuery } from "../../interfaces/queries/IContactQuery";
 
 export function ChatCardComponent({
   chat,
   loggedContactUsername,
+  isMobilePageModeStateProp,
   isSelected,
 }: {
   chat: IChatQuery;
   loggedContactUsername: string;
+  isMobilePageModeStateProp: [
+    boolean,
+    React.Dispatch<React.SetStateAction<boolean>>,
+  ];
   isSelected: boolean;
 }) {
+  const [isMobilePageModeState, setIsMobilePageModeState] =
+    isMobilePageModeStateProp;
   const contactChat = contactChatByUsername(
     chat.contacts,
     loggedContactUsername,
@@ -47,7 +53,7 @@ export function ChatCardComponent({
   return (
     <div
       className="chatCard"
-      onClick={() => setSelectedChat(chat.id)}
+      onClick={() => setSelectedChat(chat.id, setIsMobilePageModeState)}
       style={{ ...selectConfig }}
     >
       <div className="chatCard__contactInfo">
@@ -73,5 +79,11 @@ export function ChatCardComponent({
 }
 
 const ChangerSelectedChat =
-  (navigate: NavigateFunction) => (clickedChatId: string) =>
-    navigate(`/chat/${clickedChatId}`);
+  (navigate: NavigateFunction) =>
+  (
+    clickedChatId: string,
+    setIsMobilePageModeState: React.Dispatch<React.SetStateAction<boolean>>,
+  ) => {
+    setIsMobilePageModeState(true);
+    navigate(`/chat/${clickedChatId}/chat`);
+  };

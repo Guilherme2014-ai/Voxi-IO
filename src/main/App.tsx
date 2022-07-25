@@ -1,7 +1,7 @@
 import React from "react";
 
 // Dependencies
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import { getProviderValue } from "../adapters/context/UsecasesContext";
 
 // Components
@@ -37,7 +37,7 @@ function App() {
             }
           />
           <Route
-            path="chat/:chat_id"
+            path="chat/:chat_id/:page_priority"
             element={
               <ChatPage
                 findContactByUsernameUsecase={findContactByUsernameUsecase}

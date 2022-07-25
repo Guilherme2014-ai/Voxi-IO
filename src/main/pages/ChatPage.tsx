@@ -1,20 +1,14 @@
-import { idUniqueV2 } from "id-unique-protocol";
 import React, { Dispatch, useEffect, useState } from "react";
 import { NavigateFunction, useNavigate, useParams } from "react-router";
 import { SendMessageUsecaseContext } from "../../adapters/context/SendMessageUsecase";
 
 // Interfaces
 import { IChatPage } from "../../interfaces/components/IChatPage";
-import { IChatQuery } from "../../interfaces/queries/IChatQuery";
 import { IContactQuery } from "../../interfaces/queries/IContactQuery";
-import IFindChatByID from "../../interfaces/usecases/IFindChatByID";
 import { IFindContactByUsername } from "../../interfaces/usecases/IFindContactByUsername";
-import { ChatCardComponent } from "../components/ChatCardComponent";
 import { ChatPageNavBarComponent } from "../components/ChatPageNavBarComponent";
-import { ContactInfoComponent } from "../components/ContactInfoComponent";
-import { ContactMessageComponent } from "../components/ContactMessageComponent";
-import { ChatSearchIcon } from "../components/icons/ChatSearchIcon";
-import { MessageInputComponent } from "../components/MessageInputComponent";
+import { ChatListSubPage } from "../subPages/ChatListSubPage";
+import { ChatSubPage } from "../subPages/ChatSubPage";
 
 // CSS
 import "./styles/ChatPage.scss";
@@ -29,19 +23,16 @@ export function ChatPage({
   findChatByIDUsecase,
   createMessageUsecase,
 }: IChatPage) {
-  const navigate = useNavigate();
   const { chat_id: selectedChatId } = useParams<{ chat_id: string }>();
+  const { page_priority: pagePriority } = useParams<{
+    page_priority: "chat" | "chatList";
+  }>();
 
+  const navigate = useNavigate();
+
+  const [isMobilePageMode, setIsMobilePageMode] = useState<boolean>(false);
   const [loggedContactDataState, setLoggedContactDataState] =
     useState<IContactQuery | null>(null);
-  const [selectedChatDataState, setSelectedChatDataState] =
-    useState<IChatQuery | null>(null);
-
-  useLoadSelectedChat(
-    setSelectedChatDataState,
-    findChatByIDUsecase,
-    selectedChatId as string,
-  );
 
   useLoadLoggedContactData(
     setLoggedContactDataState,
@@ -49,96 +40,62 @@ export function ChatPage({
     findContactByUsernameUsecase,
   );
 
-  if (loggedContactDataState)
-    localStorage.setItem(
-      "loggedContact",
-      JSON.stringify(loggedContactDataState),
-    );
+  // Nem valeu tanto a pena criar um context aqui, só confundi, deixando a questão, porque ?
+
+  useEffect(() => {
+    window.addEventListener("resize", setPagePriority);
+    function setPagePriority() {
+      const pageWidth = window.innerWidth;
+      const limit = 958;
+
+      const underLimit = pageWidth < limit;
+
+      setIsMobilePageMode(underLimit);
+      console.log(pageWidth);
+    }
+  }, []);
+
+  const subPages = {
+    chatList: (
+      <ChatListSubPage
+        loggedContactDataStateProp={[
+          loggedContactDataState,
+          setLoggedContactDataState,
+        ]}
+        isMobilePageModeStateProp={[isMobilePageMode, setIsMobilePageMode]}
+        selectedChatId={selectedChatId}
+      />
+    ),
+    chat: (
+      <ChatSubPage
+        loggedContactDataStateProp={[
+          loggedContactDataState,
+          setLoggedContactDataState,
+        ]}
+        findChatByIDUsecase={findChatByIDUsecase}
+        selectedChatId={selectedChatId}
+      />
+    ),
+  };
 
   return (
     <SendMessageUsecaseContext.Provider value={createMessageUsecase}>
-      <div className="ChatPage">
-        <header>
-          <ChatPageNavBarComponent />
-        </header>
-
+      {isMobilePageMode ? (
         <div className="ChatPage__content">
-          <aside>
-            <div className="aside_content">
-              <h2>Messages</h2>
-
-              <div className="aside_content__searchGroup">
-                <form>
-                  <div className="aside_content__inputArea">
-                    <ChatSearchIcon />
-                    <input
-                      type="text"
-                      className="aside_content__inputArea"
-                      name="aside_content__inputArea"
-                      id="aside_content__inputArea"
-                    />
-                  </div>
-                  <button>CHAT +</button>
-                </form>
-              </div>
-
-              <div className="aside_content__chats">
-                {loggedContactDataState ? (
-                  <div>
-                    {loggedContactDataState.chats.map((chat) => {
-                      const isSelected = chat.id === selectedChatId;
-
-                      return (
-                        <ChatCardComponent
-                          key={chat.id}
-                          chat={chat}
-                          loggedContactUsername={
-                            loggedContactDataState.username
-                          }
-                          isSelected={isSelected}
-                        />
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <h1>Loading...</h1>
-                )}
-              </div>
-            </div>
-          </aside>
-          <main>
-            {selectedChatDataState &&
-            loggedContactDataState &&
-            selectedChatId ? (
-              <>
-                <div className="chatContent__main__chatHeader">
-                  <div className="coverBack"></div>
-                  <ContactInfoComponent selectedChat={selectedChatDataState} />
-                  <br />
-                  <hr />
-                </div>
-                <div className="chatContent__main__chatContent">
-                  {selectedChatDataState.messages.map((message) => (
-                    <ContactMessageComponent
-                      key={idUniqueV2()}
-                      contactLogged={loggedContactDataState}
-                      chatContacts={selectedChatDataState.contacts}
-                      message={message}
-                    />
-                  ))}
-                </div>
-
-                <MessageInputComponent
-                  selectedChatId={selectedChatId}
-                  loggedContactDataState={loggedContactDataState}
-                />
-              </>
-            ) : (
-              <div></div>
-            )}
-          </main>
+          {pagePriority && <>{subPages[pagePriority]}</>}
         </div>
-      </div>
+      ) : (
+        <div className="ChatPage">
+          <header>
+            <ChatPageNavBarComponent />
+          </header>
+
+          <div className="ChatPage__content">
+            {subPages.chatList}
+            {subPages.chat}
+          </div>
+        </div>
+      )}
     </SendMessageUsecaseContext.Provider>
   );
 }
@@ -172,20 +129,4 @@ function useLoadLoggedContactData(
 
     loadLoggedContact();
   }, []);
-}
-
-function useLoadSelectedChat(
-  setSelectedChatDataState: Dispatch<React.SetStateAction<IChatQuery | null>>,
-  findChatByIDUsecase: IFindChatByID,
-  selectedChatId: string,
-) {
-  useEffect(() => {
-    async function loadSelectedChatData() {
-      const chat = await findChatByIDUsecase.Handler(selectedChatId as string);
-
-      setSelectedChatDataState(chat);
-    }
-
-    loadSelectedChatData();
-  });
 }
