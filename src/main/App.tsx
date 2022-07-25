@@ -19,6 +19,7 @@ function App() {
     findChatByIDUsecase,
     createMessageUsecase,
     createNewContactUsecase,
+    userAuthenticator,
   } = getProviderValue();
 
   return (
@@ -28,7 +29,11 @@ function App() {
           <Route
             path="/"
             element={
-              <LoginPage createNewContactUsecase={createNewContactUsecase} />
+              <LoginPage
+                createNewContactUsecase={createNewContactUsecase}
+                userAuthenticator={userAuthenticator}
+                findUserByUsernameUsename={findContactByUsernameUsecase}
+              />
             }
           />
           <Route

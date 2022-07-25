@@ -1,5 +1,6 @@
+import { IContactMolde } from "../IContactMolde";
 import { IContactQuery } from "../queries/IContactQuery";
 
 export interface ICreateNewContact {
-  Handler(): Promise<IContactQuery>;
+  Handler(contactMolde: IContactMolde): Promise<IContactQuery>;
 }

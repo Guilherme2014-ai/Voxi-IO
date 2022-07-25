@@ -1,17 +1,28 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { NavigateFunction, useNavigate } from "react-router";
+import { IUserAuthenticator } from "../../interfaces/authenticators/IUserAuthenticator";
 
 // Interfaces
 import { ILoginPageProps } from "../../interfaces/components/ILoginPage";
 import { ICreateNewContact } from "../../interfaces/usecases/CreateNewContact";
+import { IFindContactByUsername } from "../../interfaces/usecases/IFindContactByUsername";
+import { isContactLogged } from "../../middlewares/isContactLoggad";
 import GoogleIcon from "../components/icons/GoogleIcon";
 import LogoImage from "../components/icons/LogoImage";
 
 // CSS
 import "./styles/LoginPage.scss";
 
-export function LoginPage({ createNewContactUsecase }: ILoginPageProps) {
+export function LoginPage({
+  createNewContactUsecase,
+  userAuthenticator,
+  findUserByUsernameUsename,
+}: ILoginPageProps) {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isContactLogged()) navigate("/chat/chatid");
+  }, []);
 
   return (
     <main className="loginPage">
@@ -33,7 +44,13 @@ export function LoginPage({ createNewContactUsecase }: ILoginPageProps) {
               <button
                 className="loginPage__content__form__content__infoGroup__LoginMethode googleLoginMethode"
                 onClick={(e) =>
-                  createNewContactTest(e, createNewContactUsecase, navigate)
+                  createNewContactGoogleAuthenticatorMethod(
+                    e,
+                    createNewContactUsecase,
+                    userAuthenticator,
+                    findUserByUsernameUsename,
+                    navigate,
+                  )
                 }
               >
                 <GoogleIcon /> Login with Google
@@ -46,15 +63,29 @@ export function LoginPage({ createNewContactUsecase }: ILoginPageProps) {
   );
 }
 
-async function createNewContactTest(
+async function createNewContactGoogleAuthenticatorMethod(
   e: React.MouseEvent,
   createNewContactUsecase: ICreateNewContact,
+  userAuthenticator: IUserAuthenticator,
+  findUserByUsernameUsename: IFindContactByUsername,
   navigate: NavigateFunction,
 ) {
   try {
     e.preventDefault();
 
-    const contact = await createNewContactUsecase.Handler();
+    const contactMolde = await userAuthenticator.getUserInfo();
+
+    const getContact = async () => {
+      const contactCreatedBefore = await findUserByUsernameUsename.Handler(
+        contactMolde.username as string,
+      );
+
+      if (contactCreatedBefore) return contactCreatedBefore;
+
+      return await createNewContactUsecase.Handler(contactMolde);
+    };
+
+    const contact = await getContact();
     setLocalstorageContactUsername(contact.username);
 
     navigate("/chat/chatid");

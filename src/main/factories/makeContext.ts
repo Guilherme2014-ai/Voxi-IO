@@ -19,7 +19,7 @@ export const makeUsecasesContext = () => {
   const messageRepository = new GraphcmsMessageRepository();
 
   // Authencticators
-  const googleAuthenticator = new GoogleAuthenticator();
+  const userAuthenticator = new GoogleAuthenticator();
 
   // Use Cases
   const findContactByUsernameUsecase = new FindContactByUsername(
@@ -30,15 +30,16 @@ export const makeUsecasesContext = () => {
   const createMessageUsecase = new CreateNewMessage(messageRepository);
   const createNewContactUsecase = new CreateContactWithAuthenticator(
     contactRepository,
-    googleAuthenticator,
   );
 
+  // não apenas usecases --> Arruamar
   const value: IUsecasesContext = {
     findAllChatsUsecase,
     findContactByUsernameUsecase,
     findChatByIDUsecase,
     createMessageUsecase,
     createNewContactUsecase,
+    userAuthenticator,
   };
 
   return {

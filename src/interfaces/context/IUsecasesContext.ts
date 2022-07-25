@@ -1,4 +1,5 @@
 // import { IChatRepository } from "../adapters/IChatRepository";
+import { IUserAuthenticator } from "../authenticators/IUserAuthenticator";
 import { IContactRepository } from "../repositories/IContactRepository";
 import { ICreateNewContact } from "../usecases/CreateNewContact";
 import { ICreateNewMessage } from "../usecases/CreateNewMessage";
@@ -13,4 +14,5 @@ export interface IUsecasesContext {
   findChatByIDUsecase: IFindChatByID;
   createMessageUsecase: ICreateNewMessage;
   createNewContactUsecase: ICreateNewContact;
+  userAuthenticator: IUserAuthenticator;
 }

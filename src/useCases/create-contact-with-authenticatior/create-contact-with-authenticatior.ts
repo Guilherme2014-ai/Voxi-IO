@@ -1,6 +1,6 @@
 import { ContactEntity } from "../../entities/contact/ContactEntity";
 import slugfier from "../../factories/slugfier";
-import { IUserAuthenticator } from "../../interfaces/authenticators/IUserAuthenticator";
+import { IContactMolde } from "../../interfaces/IContactMolde";
 import { ICreateContactWithAuthenticator } from "../../interfaces/ICreateContactWithAuthenticator";
 import { IContactQuery } from "../../interfaces/queries/IContactQuery";
 import { IContactRepository } from "../../interfaces/repositories/IContactRepository";
@@ -8,14 +8,10 @@ import { IContactRepository } from "../../interfaces/repositories/IContactReposi
 export class CreateContactWithAuthenticator
   implements ICreateContactWithAuthenticator
 {
-  constructor(
-    private contactReporitory: IContactRepository,
-    private userAuthenticator: IUserAuthenticator,
-  ) {}
+  constructor(private contactReporitory: IContactRepository) {}
 
-  async Handler(): Promise<IContactQuery> {
+  async Handler(contactMolde: IContactMolde): Promise<IContactQuery> {
     try {
-      const contactMolde = await this.userAuthenticator.getUserInfo();
       contactMolde.username = slugfier(contactMolde.username as string);
 
       ContactEntity.Create(contactMolde, this.contactReporitory);
