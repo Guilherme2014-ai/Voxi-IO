@@ -1,5 +1,5 @@
-import { IUserRepository } from "../repositories/IContactRepository";
+import { ICreateNewContact } from "../usecases/CreateNewContact";
 
 export interface ILoginPageProps {
-  userRepository: IUserRepository;
+  createNewContactUsecase: ICreateNewContact;
 }

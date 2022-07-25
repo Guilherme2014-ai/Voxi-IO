@@ -1,5 +1,6 @@
 // Sujeito a mudança
 
+import { IContactMolde } from "../IContactMolde";
 import { IContactQuery } from "../queries/IContactQuery";
 
 export interface IContactRepository {
@@ -10,5 +11,8 @@ export interface IContactRepository {
     name: string;
     username: string;
   };*/
+
   findContactByUsername(username: string): Promise<IContactQuery>;
+  findContactByNumber(number: number | string): Promise<IContactQuery>;
+  createContact(contactMolde: IContactMolde): Promise<IContactQuery>;
 }

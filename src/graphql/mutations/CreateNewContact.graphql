@@ -1,0 +1,19 @@
+mutation CreateNewContact($name: String!, $username: String!, $number: Int, $avatarURL: String) {
+    createContact(data: {
+        name: $name, username: $username, number: $number, profile_picture_url: $avatarURL
+    }) {
+        name
+        username
+
+        chats {
+            id
+            contacts {
+                name
+                profile_picture_url
+            }
+            messages {
+                text
+            }
+        }
+    }
+}

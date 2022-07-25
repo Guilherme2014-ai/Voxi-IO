@@ -1187,7 +1187,7 @@ export type Contact = Node & {
   /** the contact's name */
   name: Scalars['String'];
   /** Contact tell number */
-  number: Scalars['Int'];
+  number?: Maybe<Scalars['Int']>;
   /** The Contact profile picture */
   profile_picture_url?: Maybe<Scalars['String']>;
   /** The time the document was published. Null on documents in draft stage. */
@@ -1286,7 +1286,7 @@ export type ContactCreateInput = {
   chats?: InputMaybe<ChatCreateManyInlineInput>;
   createdAt?: InputMaybe<Scalars['DateTime']>;
   name: Scalars['String'];
-  number: Scalars['Int'];
+  number?: InputMaybe<Scalars['Int']>;
   profile_picture_url?: InputMaybe<Scalars['String']>;
   updatedAt?: InputMaybe<Scalars['DateTime']>;
   username: Scalars['String'];
@@ -4886,6 +4886,16 @@ export enum _SystemDateTimeFieldVariation {
   Localization = 'localization'
 }
 
+export type CreateNewContactMutationVariables = Exact<{
+  name: Scalars['String'];
+  username: Scalars['String'];
+  number?: InputMaybe<Scalars['Int']>;
+  avatarURL?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type CreateNewContactMutation = { __typename?: 'Mutation', createContact?: { __typename?: 'Contact', name: string, username: string, chats: Array<{ __typename?: 'Chat', id: string, contacts: Array<{ __typename?: 'Contact', name: string, profile_picture_url?: string | null }>, messages: Array<{ __typename?: 'Message', text: string }> }> } | null };
+
 export type CreateNewMessageMutationVariables = Exact<{
   messageText: Scalars['String'];
   contactSenderUsername: Scalars['String'];
@@ -4907,6 +4917,13 @@ export type GetChatByIdQueryQueryVariables = Exact<{
 
 export type GetChatByIdQueryQuery = { __typename?: 'Query', chat?: { __typename?: 'Chat', contacts: Array<{ __typename?: 'Contact', name: string, username: string, profile_picture_url?: string | null, bio?: string | null }>, messages: Array<{ __typename?: 'Message', text: string, contactSenderUsername: string }> } | null };
 
+export type GetContactByNumberQueryQueryVariables = Exact<{
+  number: Scalars['Int'];
+}>;
+
+
+export type GetContactByNumberQueryQuery = { __typename?: 'Query', contact?: { __typename?: 'Contact', name: string, username: string, chats: Array<{ __typename?: 'Chat', id: string, contacts: Array<{ __typename?: 'Contact', name: string, profile_picture_url?: string | null }>, messages: Array<{ __typename?: 'Message', text: string }> }> } | null };
+
 export type GetContactByUsernameQueryQueryVariables = Exact<{
   username: Scalars['String'];
 }>;
@@ -4915,6 +4932,55 @@ export type GetContactByUsernameQueryQueryVariables = Exact<{
 export type GetContactByUsernameQueryQuery = { __typename?: 'Query', contact?: { __typename?: 'Contact', name: string, username: string, chats: Array<{ __typename?: 'Chat', id: string, contacts: Array<{ __typename?: 'Contact', name: string, profile_picture_url?: string | null }>, messages: Array<{ __typename?: 'Message', text: string }> }> } | null };
 
 
+export const CreateNewContactDocument = gql`
+    mutation CreateNewContact($name: String!, $username: String!, $number: Int, $avatarURL: String) {
+  createContact(
+    data: {name: $name, username: $username, number: $number, profile_picture_url: $avatarURL}
+  ) {
+    name
+    username
+    chats {
+      id
+      contacts {
+        name
+        profile_picture_url
+      }
+      messages {
+        text
+      }
+    }
+  }
+}
+    `;
+export type CreateNewContactMutationFn = Apollo.MutationFunction<CreateNewContactMutation, CreateNewContactMutationVariables>;
+
+/**
+ * __useCreateNewContactMutation__
+ *
+ * To run a mutation, you first call `useCreateNewContactMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateNewContactMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createNewContactMutation, { data, loading, error }] = useCreateNewContactMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      username: // value for 'username'
+ *      number: // value for 'number'
+ *      avatarURL: // value for 'avatarURL'
+ *   },
+ * });
+ */
+export function useCreateNewContactMutation(baseOptions?: Apollo.MutationHookOptions<CreateNewContactMutation, CreateNewContactMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateNewContactMutation, CreateNewContactMutationVariables>(CreateNewContactDocument, options);
+      }
+export type CreateNewContactMutationHookResult = ReturnType<typeof useCreateNewContactMutation>;
+export type CreateNewContactMutationResult = Apollo.MutationResult<CreateNewContactMutation>;
+export type CreateNewContactMutationOptions = Apollo.BaseMutationOptions<CreateNewContactMutation, CreateNewContactMutationVariables>;
 export const CreateNewMessageDocument = gql`
     mutation CreateNewMessage($messageText: String!, $contactSenderUsername: String!, $chat_id: ID!) {
   createMessage(
@@ -5038,6 +5104,52 @@ export function useGetChatByIdQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type GetChatByIdQueryQueryHookResult = ReturnType<typeof useGetChatByIdQueryQuery>;
 export type GetChatByIdQueryLazyQueryHookResult = ReturnType<typeof useGetChatByIdQueryLazyQuery>;
 export type GetChatByIdQueryQueryResult = Apollo.QueryResult<GetChatByIdQueryQuery, GetChatByIdQueryQueryVariables>;
+export const GetContactByNumberQueryDocument = gql`
+    query GetContactByNumberQuery($number: Int!) {
+  contact(where: {number: $number}) {
+    name
+    username
+    chats {
+      id
+      contacts {
+        name
+        profile_picture_url
+      }
+      messages {
+        text
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetContactByNumberQueryQuery__
+ *
+ * To run a query within a React component, call `useGetContactByNumberQueryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetContactByNumberQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetContactByNumberQueryQuery({
+ *   variables: {
+ *      number: // value for 'number'
+ *   },
+ * });
+ */
+export function useGetContactByNumberQueryQuery(baseOptions: Apollo.QueryHookOptions<GetContactByNumberQueryQuery, GetContactByNumberQueryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetContactByNumberQueryQuery, GetContactByNumberQueryQueryVariables>(GetContactByNumberQueryDocument, options);
+      }
+export function useGetContactByNumberQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetContactByNumberQueryQuery, GetContactByNumberQueryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetContactByNumberQueryQuery, GetContactByNumberQueryQueryVariables>(GetContactByNumberQueryDocument, options);
+        }
+export type GetContactByNumberQueryQueryHookResult = ReturnType<typeof useGetContactByNumberQueryQuery>;
+export type GetContactByNumberQueryLazyQueryHookResult = ReturnType<typeof useGetContactByNumberQueryLazyQuery>;
+export type GetContactByNumberQueryQueryResult = Apollo.QueryResult<GetContactByNumberQueryQuery, GetContactByNumberQueryQueryVariables>;
 export const GetContactByUsernameQueryDocument = gql`
     query GetContactByUsernameQuery($username: String!) {
   contact(where: {username: $username}) {

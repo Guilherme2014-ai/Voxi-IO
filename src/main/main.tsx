@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { ApolloProvider } from "@apollo/client";
-import React, { useContext } from "react";
+import React from "react";
 import ReactDOM from "react-dom/client";
 
 // Lib's

@@ -9,12 +9,17 @@ import { CreateNewMessage } from "../../useCases/create-new-message/create-new-m
 import { FindAllChats } from "../../useCases/find-all-chats/Find-all-chats";
 import findChatByID from "../../useCases/find-chat-by-id/find-chat-by-id";
 import { FindContactByUsername } from "../../useCases/find-contact-by-username/find-contact-by-username";
+import { CreateContactWithAuthenticator } from "../../useCases/create-contact-with-authenticatior/create-contact-with-authenticatior";
+import { GoogleAuthenticator } from "../../adapters/authenticators/GoogleAuthenticator";
 
 export const makeUsecasesContext = () => {
   // Repositories
   const contactRepository = new GraphcmsContactRepository();
   const chatRepository = new GraphcmsChatRepository();
   const messageRepository = new GraphcmsMessageRepository();
+
+  // Authencticators
+  const googleAuthenticator = new GoogleAuthenticator();
 
   // Use Cases
   const findContactByUsernameUsecase = new FindContactByUsername(
@@ -23,12 +28,17 @@ export const makeUsecasesContext = () => {
   const findAllChatsUsecase = new FindAllChats(chatRepository);
   const findChatByIDUsecase = new findChatByID(chatRepository);
   const createMessageUsecase = new CreateNewMessage(messageRepository);
+  const createNewContactUsecase = new CreateContactWithAuthenticator(
+    contactRepository,
+    googleAuthenticator,
+  );
 
   const value: IUsecasesContext = {
     findAllChatsUsecase,
     findContactByUsernameUsecase,
     findChatByIDUsecase,
     createMessageUsecase,
+    createNewContactUsecase,
   };
 
   return {

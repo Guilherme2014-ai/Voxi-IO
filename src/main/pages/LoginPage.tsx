@@ -1,14 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 // Interfaces
 import { ILoginPageProps } from "../../interfaces/components/ILoginPage";
 
-export function LoginPage(props: ILoginPageProps) {
-  const { userRepository } = props;
+export function LoginPage({ createNewContactUsecase }: ILoginPageProps) {
+  useEffect(() => {
+    async function createNewContactTest() {
+      const contact = await createNewContactUsecase.Handler();
 
-  function createUserHandler() {
-    console.log("Calma");
-  }
+      console.log(contact);
+    }
 
-  return <h1 onClick={createUserHandler}>Teste</h1>;
+    window.addEventListener("click", createNewContactTest);
+  }, []);
+
+  return <h1>Login Page</h1>;
 }

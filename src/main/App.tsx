@@ -6,6 +6,7 @@ import { getProviderValue } from "../adapters/context/UsecasesContext";
 
 // Components
 import { ChatPage } from "./pages/ChatPage";
+import { LoginPage } from "./pages/LoginPage";
 // import { LoginPage } from "./pages/LoginPage";
 
 // CSS
@@ -17,13 +18,19 @@ function App() {
     findContactByUsernameUsecase,
     findChatByIDUsecase,
     createMessageUsecase,
+    createNewContactUsecase,
   } = getProviderValue();
 
   return (
     <div className="App">
       <Router>
         <Routes>
-          <Route path="/" element={<h1>Teste</h1>} />
+          <Route
+            path="/"
+            element={
+              <LoginPage createNewContactUsecase={createNewContactUsecase} />
+            }
+          />
           <Route
             path="chat/:chat_id"
             element={

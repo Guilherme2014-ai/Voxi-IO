@@ -11,6 +11,7 @@ export default async (
     const isUsernameAlreadyUsed = await contactRepository.findContactByUsername(
       slugfiedUsername,
     );
+
     if (isUsernameAlreadyUsed)
       errors.push(new ErrorResponse("Username already used", 401));
   } catch (e) {
