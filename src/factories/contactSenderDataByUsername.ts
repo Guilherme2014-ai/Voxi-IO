@@ -1,6 +1,6 @@
 import { IContactQuery } from "../interfaces/queries/IContactQuery";
 
 export const contactSenderDataByUsername = (
-  username: string,
+  id: string,
   contacts: IContactQuery[],
-) => contacts.find((contact) => contact.username == username);
+) => contacts.find((contact) => contact.id == id);

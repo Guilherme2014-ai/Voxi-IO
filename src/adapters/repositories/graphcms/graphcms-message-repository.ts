@@ -7,12 +7,12 @@ import { apolloClient } from "../../../libs/ApolloLib";
 export class GraphcmsMessageRepository implements IMessageRepository {
   async Create(
     messageText: string,
-    username: string,
+    contactId: string,
     chatId: string,
   ): Promise<IMessageQuery> {
     const mutationConfig = {
       messageText,
-      contactSenderUsername: username,
+      contactSenderId: contactId,
       chat_id: chatId,
     };
 

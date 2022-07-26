@@ -8,15 +8,16 @@ export class CreateNewMessage implements ICreateNewMessage {
 
   async Handle(
     messageText: string,
-    contactSenderUsername: string,
+    contactId: string,
     chatId: string,
   ): Promise<IMessageQuery> {
     try {
-      MessageEntity.Create(messageText, contactSenderUsername);
+      // tbm da certo, mas dps criar um novo
+      MessageEntity.Create(messageText, contactId);
 
       return await this.messageRepository.Create(
         messageText,
-        contactSenderUsername,
+        contactId,
         chatId,
       );
     } catch (e) {

@@ -1,14 +1,14 @@
-mutation CreateNewMessage($messageText: String!, $contactSenderUsername: String!, $chat_id: ID!) {
+mutation CreateNewMessage($messageText: String!, $contactSenderId: String!, $chat_id: ID!) {
     createMessage(
         data: {
             text: $messageText,
-            contactSenderUsername: $contactSenderUsername,
+            contactSenderId: $contactSenderId,
             cl5po8uvy2cr601ul2mfa2356: {
                     connect: {id: $chat_id}
                 }
             }
     ) {
         text
-        contactSenderUsername
+        contactSenderId
     }
 }

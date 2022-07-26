@@ -83,7 +83,5 @@ const ChangerSelectedChat =
   (
     clickedChatId: string,
     setIsMobilePageModeState: React.Dispatch<React.SetStateAction<boolean>>,
-  ) => {
-    setIsMobilePageModeState(true);
+  ) =>
     navigate(`/chat/${clickedChatId}/chat`);
-  };

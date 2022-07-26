@@ -1,5 +1,6 @@
 query GetContactByNumberQuery($number: Int!) {
     contact(where: { number: $number }) {
+        id
         name
         username
 

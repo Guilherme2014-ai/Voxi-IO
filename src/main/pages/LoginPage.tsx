@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { NavigateFunction, useNavigate } from "react-router";
 import { IUserAuthenticator } from "../../interfaces/authenticators/IUserAuthenticator";
 
@@ -21,7 +21,7 @@ export function LoginPage({
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isContactLogged()) navigate("/chat/chatid");
+    if (isContactLogged()) navigate("/chat/__chatid__/chatList/");
   }, []);
 
   return (
@@ -88,7 +88,7 @@ async function createNewContactGoogleAuthenticatorMethod(
     const contact = await getContact();
     setLocalstorageContactUsername(contact.username);
 
-    navigate("/chat/chatid");
+    navigate("/chat/__chatid__/chatList");
   } catch (e) {
     alert(e);
     console.error(e);

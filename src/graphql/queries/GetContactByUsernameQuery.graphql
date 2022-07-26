@@ -1,5 +1,6 @@
 query GetContactByUsernameQuery($username: String!) {
     contact(where: { username: $username }) {
+        id
         name
         username
 

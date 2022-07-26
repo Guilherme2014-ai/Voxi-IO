@@ -1,5 +1,4 @@
 import { resolve } from "path";
-import HtmlWebpackPlugin from "html-webpack-plugin";
 import miniCssExtractPlugin from "mini-css-extract-plugin";
 
 module.exports = {
@@ -12,12 +11,8 @@ module.exports = {
     },
   },
 
-  plugins: [
-    new miniCssExtractPlugin({
-      filename: resolve(__dirname, "..", "index.html"),
-    }),
-    new HtmlWebpackPlugin(),
-  ],
+  plugins: [new miniCssExtractPlugin()],
+
   module: {
     rules: [
       {

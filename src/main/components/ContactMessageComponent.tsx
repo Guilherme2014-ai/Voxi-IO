@@ -16,12 +16,11 @@ export function ContactMessageComponent({
   message: IMessageQuery;
 }) {
   const contactSender = contactSenderDataByUsername(
-    message.contactSenderUsername,
+    message.contactSenderId,
     chatContacts,
   );
 
-  const isContactLoggedMessage =
-    contactSender?.username == contactLogged.username;
+  const isContactLoggedMessage = contactSender?.id == contactLogged.id;
 
   const styleConfig: React.CSSProperties | undefined = isContactLoggedMessage
     ? {

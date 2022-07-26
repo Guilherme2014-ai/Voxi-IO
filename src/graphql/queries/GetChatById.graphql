@@ -1,6 +1,7 @@
 query getChatByIDQuery($chat_id: ID!) {
     chat(where: {id: $chat_id}) {
         contacts {
+            id
             name
             username
             profile_picture_url
@@ -8,7 +9,7 @@ query getChatByIDQuery($chat_id: ID!) {
         }
         messages {
             text
-            contactSenderUsername
+            contactSenderId
         }
     }
 }

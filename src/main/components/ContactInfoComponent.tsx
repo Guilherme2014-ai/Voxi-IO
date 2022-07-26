@@ -2,7 +2,6 @@ import React from "react";
 import Avatar from "@mui/material/Avatar";
 import { IChatQuery } from "../../interfaces/queries/IChatQuery";
 import { contactChatByUsername } from "../../factories/contactChatByUsername";
-import { IContactQuery } from "../../interfaces/queries/IContactQuery";
 
 // CSS
 import "./styles/ContactInfoComponent.scss";
@@ -14,16 +13,14 @@ export function ContactInfoComponent({
 }) {
   // console.log(selectedChat);
   // Melhorar isso fazendo uma class que chama isso ou sei la
-  const loggedContactLocalStorage = JSON.parse(
-    localStorage.getItem("loggedContact") as string,
-  ) as IContactQuery;
+  const loggedContactLocalStorage = localStorage.getItem(
+    "contact_username",
+  ) as string;
 
   const contactChat = contactChatByUsername(
     selectedChat.contacts,
-    loggedContactLocalStorage.username,
+    loggedContactLocalStorage,
   );
-
-  //console.log(selectedChat);
 
   return (
     <div className="contactInfo">

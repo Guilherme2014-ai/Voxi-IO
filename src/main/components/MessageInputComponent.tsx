@@ -35,7 +35,7 @@ export function MessageInputComponent({
     try {
       await sendMessageUsecase.Handle(
         textMessage,
-        loggedContactDataState.username,
+        loggedContactDataState.id,
         selectedChatId,
       );
     } catch (e) {

@@ -43,7 +43,9 @@ export function ChatPage({
   // Nem valeu tanto a pena criar um context aqui, só confundi, deixando a questão, porque ?
 
   useEffect(() => {
+    setPagePriority();
     window.addEventListener("resize", setPagePriority);
+
     function setPagePriority() {
       const pageWidth = window.innerWidth;
       const limit = 958;
@@ -51,7 +53,6 @@ export function ChatPage({
       const underLimit = pageWidth < limit;
 
       setIsMobilePageMode(underLimit);
-      console.log(pageWidth);
     }
   }, []);
 

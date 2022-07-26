@@ -1,3 +1,4 @@
+import React from "react";
 import MessageTextIcon from "./icons/MessageTextIcon";
 import MicIcon from "./icons/MicIcon";
 
