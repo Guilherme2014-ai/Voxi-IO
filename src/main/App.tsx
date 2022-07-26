@@ -20,6 +20,7 @@ function App() {
     createMessageUsecase,
     createNewContactUsecase,
     userAuthenticator,
+    createNewChat,
   } = getProviderValue();
 
   return (
@@ -40,6 +41,7 @@ function App() {
             path="chat/:chat_id/:page_priority"
             element={
               <ChatPage
+                createNewChat={createNewChat}
                 findContactByUsernameUsecase={findContactByUsernameUsecase}
                 findChatByIDUsecase={findChatByIDUsecase}
                 createMessageUsecase={createMessageUsecase}

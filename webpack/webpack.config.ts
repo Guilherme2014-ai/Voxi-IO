@@ -1,6 +1,5 @@
 import { resolve } from "path";
 import miniCssExtractPlugin from "mini-css-extract-plugin";
-
 module.exports = {
   entry: resolve(__dirname, "..", "src", "main", "main.tsx"),
   mode: "production",
@@ -25,6 +24,7 @@ module.exports = {
             "@babel/preset-typescript",
           ],
         },
+        exclude: /node_modules/,
       },
       {
         test: /\.s[ac]ss$/i,

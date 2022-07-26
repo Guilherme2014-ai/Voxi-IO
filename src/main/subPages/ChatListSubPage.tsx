@@ -1,5 +1,7 @@
-import React from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React, { useState } from "react";
 import { IContactQuery } from "../../interfaces/queries/IContactQuery";
+import { ICreateNewChat } from "../../interfaces/usecases/ICreateNewChat";
 import { ChatCardComponent } from "../components/ChatCardComponent";
 import { ChatSearchIcon } from "../components/icons/ChatSearchIcon";
 
@@ -10,6 +12,7 @@ export function ChatListSubPage({
   loggedContactDataStateProp,
   selectedChatId,
   isMobilePageModeStateProp,
+  createNewChat,
 }: {
   loggedContactDataStateProp: [
     IContactQuery | null,
@@ -20,7 +23,9 @@ export function ChatListSubPage({
     React.Dispatch<React.SetStateAction<boolean>>,
   ];
   selectedChatId: string | undefined;
+  createNewChat: ICreateNewChat;
 }) {
+  const [newContactFieldState, setNewContactFieldState] = useState("");
   const [loggedContactDataState, setLoggedContactDataStateProp] =
     loggedContactDataStateProp;
 
@@ -38,9 +43,22 @@ export function ChatListSubPage({
                 className="aside_content__inputArea"
                 name="aside_content__inputArea"
                 id="aside_content__inputArea"
+                placeholder="Contact Number or Username"
+                onChange={(e) => setNewContactFieldState(e.target.value)}
+                value={newContactFieldState}
               />
             </div>
-            <button>CHAT +</button>
+            <button
+              onClick={() =>
+                addNewContact(
+                  newContactFieldState,
+                  loggedContactDataState,
+                  createNewChat,
+                )
+              }
+            >
+              CHAT +
+            </button>
           </form>
         </div>
 
@@ -68,4 +86,36 @@ export function ChatListSubPage({
       </div>
     </aside>
   );
+}
+
+async function addNewContact(
+  newContactFieldStateParam: string,
+  loggedContactDataState: IContactQuery | null,
+  createNewChatUsecase: ICreateNewChat,
+) {
+  try {
+    let contactReceiverNumber: number | null = Number(
+      newContactFieldStateParam,
+    );
+    let contactReceiverUsername: string | null = newContactFieldStateParam;
+
+    const isNewContactFieldStateNumber =
+      contactReceiverNumber - contactReceiverNumber === 0;
+
+    if (!isNewContactFieldStateNumber) {
+      contactReceiverNumber = null;
+    } else {
+      contactReceiverUsername = null;
+    }
+
+    const chatCreated = await createNewChatUsecase.Handler(
+      loggedContactDataState?.id as string,
+      contactReceiverUsername,
+      contactReceiverNumber,
+    );
+
+    console.log(chatCreated);
+  } catch (e) {
+    alert(e);
+  }
 }

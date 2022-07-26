@@ -8,6 +8,7 @@ query GetContactByUsernameQuery($username: String!) {
             id
             contacts {
                 name
+                username
                 profile_picture_url
             }
             messages {

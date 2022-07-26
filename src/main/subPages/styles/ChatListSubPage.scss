@@ -50,14 +50,15 @@ aside {
                         height: 37px;
 
                         flex: 1;
-                        max-width: 170px;
-                        margin-right: 10px;
+                        margin-right: 20px;
 
                         outline: none;
+                        text-align: center;
                     }
                 }
 
                 button {
+                    transition: all ease-in-out 0.3s;
                     border: none;
                     padding: 6;
                     font-family: 'Roboto', sans-serif;
@@ -67,6 +68,12 @@ aside {
                     color: $mainColor;
 
                     background: none;
+
+                    cursor: pointer;
+
+                    &:hover {
+                        transform: scale(1.05);
+                    }
                 }
             }
         }
@@ -74,5 +81,11 @@ aside {
         .aside_content__chats {
             margin-top: 40px;
         }
+    }
+}
+
+@media (max-width: 958px) {
+    aside {
+        border: none;
     }
 }

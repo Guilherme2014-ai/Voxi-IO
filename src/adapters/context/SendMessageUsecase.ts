@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { ICreateNewMessage } from "../../interfaces/usecases/CreateNewMessage";
+import { ICreateNewMessage } from "../../interfaces/usecases/ICreateNewMessage";
 
 const SendMessageUsecaseContext = React.createContext<ICreateNewMessage | null>(
   null,

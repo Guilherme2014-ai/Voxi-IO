@@ -11,6 +11,7 @@ import findChatByID from "../../useCases/find-chat-by-id/find-chat-by-id";
 import { FindContactByUsername } from "../../useCases/find-contact-by-username/find-contact-by-username";
 import { CreateContactWithAuthenticator } from "../../useCases/create-contact-with-authenticatior/create-contact-with-authenticatior";
 import { GoogleAuthenticator } from "../../adapters/authenticators/GoogleAuthenticator";
+import { CreateNewChat } from "../../useCases/create-new-chat/create-new-chat";
 
 export const makeUsecasesContext = () => {
   // Repositories
@@ -31,6 +32,7 @@ export const makeUsecasesContext = () => {
   const createNewContactUsecase = new CreateContactWithAuthenticator(
     contactRepository,
   );
+  const createNewChat = new CreateNewChat(chatRepository);
 
   // não apenas usecases --> Arruamar
   const value: IUsecasesContext = {
@@ -40,6 +42,7 @@ export const makeUsecasesContext = () => {
     createMessageUsecase,
     createNewContactUsecase,
     userAuthenticator,
+    createNewChat,
   };
 
   return {

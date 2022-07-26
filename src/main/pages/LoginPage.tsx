@@ -4,7 +4,7 @@ import { IUserAuthenticator } from "../../interfaces/authenticators/IUserAuthent
 
 // Interfaces
 import { ILoginPageProps } from "../../interfaces/components/ILoginPage";
-import { ICreateNewContact } from "../../interfaces/usecases/CreateNewContact";
+import { ICreateNewContact } from "../../interfaces/usecases/ICreateNewContact";
 import { IFindContactByUsername } from "../../interfaces/usecases/IFindContactByUsername";
 import { isContactLogged } from "../../middlewares/isContactLoggad";
 import GoogleIcon from "../components/icons/GoogleIcon";

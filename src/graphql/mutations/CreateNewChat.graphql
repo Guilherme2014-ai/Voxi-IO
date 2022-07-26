@@ -1,0 +1,27 @@
+mutation CreateNewChat($contactSenderId: ID!, $contactReceiverUsername: String, $contactReceiverNumber: Int) {
+    createChat(
+            data: {
+                contacts: {
+                    connect: [
+                        {
+                            id: $contactSenderId
+                        },
+                        {
+                            username: $contactReceiverUsername,
+                            number: $contactReceiverNumber
+                        }
+                    ]
+                }
+            }
+        ) {
+            id
+            contacts {
+                name
+                profile_picture_url
+                username
+            }
+            messages {
+                text
+            }
+        }
+}

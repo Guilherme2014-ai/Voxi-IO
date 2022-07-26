@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { getSendMessageUsecaseContextValue } from "../../adapters/context/SendMessageUsecase";
 import { IContactQuery } from "../../interfaces/queries/IContactQuery";
-import { ICreateNewMessage } from "../../interfaces/usecases/CreateNewMessage";
+import { ICreateNewMessage } from "../../interfaces/usecases/ICreateNewMessage";
 import MessageClips from "./icons/MessageClips";
 import MessageSendIcon from "./icons/MessageSendIcon";
 

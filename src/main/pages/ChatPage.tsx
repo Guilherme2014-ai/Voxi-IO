@@ -22,6 +22,7 @@ export function ChatPage({
   findContactByUsernameUsecase,
   findChatByIDUsecase,
   createMessageUsecase,
+  createNewChat,
 }: IChatPage) {
   const { chat_id: selectedChatId } = useParams<{ chat_id: string }>();
   const { page_priority: pagePriority } = useParams<{
@@ -65,6 +66,7 @@ export function ChatPage({
         ]}
         isMobilePageModeStateProp={[isMobilePageMode, setIsMobilePageMode]}
         selectedChatId={selectedChatId}
+        createNewChat={createNewChat}
       />
     ),
     chat: (
