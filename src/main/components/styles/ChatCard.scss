@@ -21,3 +21,15 @@
         }
     }
 }
+
+@media (max-width: 1100px) {
+    .chatCard {
+        flex-direction: column;
+
+        .chatCard__contactInfo {
+            width: 100%;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+    }
+}

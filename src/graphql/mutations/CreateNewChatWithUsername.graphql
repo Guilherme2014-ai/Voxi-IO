@@ -1,4 +1,4 @@
-mutation CreateNewChat($contactSenderId: ID!, $contactReceiverUsername: String, $contactReceiverNumber: Int) {
+mutation CreateNewChatWithUsername($contactSenderId: ID!, $contactReceiverUsername: String) {
     createChat(
             data: {
                 contacts: {
@@ -8,7 +8,6 @@ mutation CreateNewChat($contactSenderId: ID!, $contactReceiverUsername: String, 
                         },
                         {
                             username: $contactReceiverUsername,
-                            number: $contactReceiverNumber
                         }
                     ]
                 }

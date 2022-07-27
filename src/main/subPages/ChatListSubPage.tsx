@@ -49,8 +49,9 @@ export function ChatListSubPage({
               />
             </div>
             <button
-              onClick={() =>
+              onClick={(e) =>
                 addNewContact(
+                  e,
                   newContactFieldState,
                   loggedContactDataState,
                   createNewChat,
@@ -89,11 +90,14 @@ export function ChatListSubPage({
 }
 
 async function addNewContact(
+  e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   newContactFieldStateParam: string,
   loggedContactDataState: IContactQuery | null,
   createNewChatUsecase: ICreateNewChat,
 ) {
   try {
+    e.preventDefault();
+
     let contactReceiverNumber: number | null = Number(
       newContactFieldStateParam,
     );

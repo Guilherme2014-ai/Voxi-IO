@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
-  CreateNewChatDocument,
+  CreateNewChatWithNumberDocument,
+  CreateNewChatWithUsernameDocument,
   GetAllChatsQueryDocument,
   GetChatByIdQueryDocument,
 } from "../../../graphql/generatedCodegen";
@@ -16,16 +17,24 @@ export class GraphcmsChatRepository implements IChatRepository {
     contactReceiverUsername: string | null,
   ): Promise<IChatQuery> {
     console.log(contactReceiverNumber, contactReceiverUsername);
+
+    const mutationVariable = contactReceiverNumber
+      ? { contactReceiverNumber }
+      : { contactReceiverUsername };
+
     const chatCreated = (
       await apolloClient.mutate<{ createChat: IChatQuery }>({
-        mutation: CreateNewChatDocument,
+        mutation: contactReceiverNumber
+          ? CreateNewChatWithNumberDocument
+          : CreateNewChatWithUsernameDocument,
         variables: {
           contactSenderId,
-          contactReceiverUsername,
-          contactReceiverNumber,
+          ...mutationVariable,
         },
       })
     ).data?.createChat as IChatQuery;
+
+    console.log(chatCreated);
 
     await apolloClient.mutate({
       mutation: gql`
