@@ -1,17 +1,16 @@
 import React from "react";
 import Avatar from "@mui/material/Avatar";
+import { NavigateFunction, useNavigate } from "react-router";
 
 // Interfaces
 import { IChatQuery } from "../../interfaces/queries/IChatQuery";
-/*
+
 // Factories
-import { contactChatByUsername } from "../../factories/contactChatByUsername";*/
+import { LastMessageComponent } from "./LastMessageComponent";
+import { contactChatByUsername } from "../../factories/contactChatByUsername";
 
 // CSS
 import "./styles/ChatCard.scss";
-import { NavigateFunction, useNavigate } from "react-router";
-import { LastMessageComponent } from "./LastMessageComponent";
-import { contactChatByUsername } from "../../factories/contactChatByUsername";
 
 export function ChatCardComponent({
   chat,

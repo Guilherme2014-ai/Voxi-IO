@@ -83,16 +83,16 @@ export function ChatPage({
 
   return (
     <SendMessageUsecaseContext.Provider value={createMessageUsecase}>
+      <header>
+        <ChatPageNavBarComponent />
+      </header>
+
       {isMobilePageMode ? (
         <div className="ChatPage__content">
           {pagePriority && <>{subPages[pagePriority]}</>}
         </div>
       ) : (
         <div className="ChatPage">
-          <header>
-            <ChatPageNavBarComponent />
-          </header>
-
           <div className="ChatPage__content">
             {subPages.chatList}
             {subPages.chat}

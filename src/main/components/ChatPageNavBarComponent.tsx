@@ -1,7 +1,6 @@
 import React from "react";
 import ContactNotificationsIcon from "./icons/ContactNotificationsIcon";
 import ContactPerfilIcon from "./icons/ContactPerfilIcon";
-import ContactPerfil from "./icons/ContactPerfilIcon";
 
 // CSS
 import "./styles/ChatPageNavBar.scss";
