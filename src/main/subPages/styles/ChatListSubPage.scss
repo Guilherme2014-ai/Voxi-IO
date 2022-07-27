@@ -7,6 +7,10 @@ aside {
     margin: 0 20px;
     height: 100%;
 
+    &::-webkit-scrollbar {
+        background: transparent;
+    }
+
     overflow-y: auto;
     flex: 1;
 
