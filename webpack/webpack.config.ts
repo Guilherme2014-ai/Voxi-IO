@@ -1,5 +1,7 @@
 import { resolve } from "path";
 import miniCssExtractPlugin from "mini-css-extract-plugin";
+import htmlWebpackPlugin from "html-webpack-plugin";
+
 module.exports = {
   entry: resolve(__dirname, "..", "src", "main", "main.tsx"),
   mode: "production",
@@ -10,7 +12,12 @@ module.exports = {
     },
   },
 
-  plugins: [new miniCssExtractPlugin()],
+  plugins: [
+    new miniCssExtractPlugin(),
+    new htmlWebpackPlugin({
+      template: resolve(__dirname, "..", "index.html"),
+    }),
+  ],
 
   module: {
     rules: [
