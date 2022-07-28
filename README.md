@@ -1,6 +1,8 @@
 # OBS: This project is being developed yet, so many functionalities is not working yet...
 ## State: Beta
 
+- Join in my app and text me, here are my number: 5515988315201. Just copy
+
 ## How it Works
 The architecture of this project was made entirely based on Clean Architecture, Clean Code Principles S.O.L.I.D, thus generating a reusable, organized and expandable system. As an example of data storage (Data) VoxiIO (this Project) uses a CMS called GraphCMS, through GraphQL, and Firebase as a secondary database, as a resource that firebase has, as given the realtime, which helps in the operation of Chat and Web Call/Video-Call.
 
