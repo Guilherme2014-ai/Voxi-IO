@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState } from "react";
+import React, { Dispatch, useEffect, useState } from "react";
+import { IChatQuery } from "../../interfaces/queries/IChatQuery";
 import { IContactQuery } from "../../interfaces/queries/IContactQuery";
 import { ICreateNewChat } from "../../interfaces/usecases/ICreateNewChat";
 import { ChatCardComponent } from "../components/ChatCardComponent";
@@ -26,8 +27,15 @@ export function ChatListSubPage({
   createNewChat: ICreateNewChat;
 }) {
   const [newContactFieldState, setNewContactFieldState] = useState("");
-  const [loggedContactDataState, setLoggedContactDataStateProp] =
+  const [loggedContactDataState, setLoggedContactDataState] =
     loggedContactDataStateProp;
+  const [chatsState, setChatsState] = useState<IChatQuery[] | undefined>(
+    loggedContactDataState?.chats,
+  );
+
+  useEffect(() => {
+    setChatsState(loggedContactDataState?.chats);
+  }, [loggedContactDataState]);
 
   return (
     <aside>
@@ -52,6 +60,9 @@ export function ChatListSubPage({
               onClick={(e) =>
                 addNewContact(
                   e,
+                  chatsState,
+                  setChatsState,
+                  setNewContactFieldState,
                   newContactFieldState,
                   loggedContactDataState,
                   createNewChat,
@@ -64,9 +75,9 @@ export function ChatListSubPage({
         </div>
 
         <div className="aside_content__chats">
-          {loggedContactDataState ? (
+          {chatsState && loggedContactDataState ? (
             <div>
-              {loggedContactDataState.chats.map((chat) => {
+              {chatsState.map((chat) => {
                 const isSelected = chat.id === selectedChatId;
 
                 return (
@@ -91,6 +102,9 @@ export function ChatListSubPage({
 
 async function addNewContact(
   e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  chatsState: IChatQuery[] | undefined,
+  setChatsState: Dispatch<React.SetStateAction<IChatQuery[] | undefined>>,
+  setNewContactFieldStateParam: Dispatch<React.SetStateAction<string>>,
   newContactFieldStateParam: string,
   loggedContactDataState: IContactQuery | null,
   createNewChatUsecase: ICreateNewChat,
@@ -118,7 +132,14 @@ async function addNewContact(
       contactReceiverNumber,
     );
 
-    console.log(chatCreated);
+    setNewContactFieldStateParam("");
+
+    const updatedChats: IChatQuery[] = [
+      ...(chatsState as IChatQuery[]),
+      chatCreated,
+    ];
+
+    setChatsState(updatedChats);
   } catch (e) {
     alert(e);
   }

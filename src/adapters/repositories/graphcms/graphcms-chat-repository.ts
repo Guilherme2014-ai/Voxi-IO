@@ -32,8 +32,6 @@ export class GraphcmsChatRepository implements IChatRepository {
       })
     ).data?.createChat as IChatQuery;
 
-    console.log(chatCreated);
-
     await apolloClient.mutate({
       mutation: gql`
         mutation MyMutation {

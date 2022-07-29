@@ -13,6 +13,7 @@ import { ChatSubPage } from "../subPages/ChatSubPage";
 
 // CSS
 import "./styles/ChatPage.scss";
+import { OnlineContactNotificationComponent } from "../components/OnlineContactNotification";
 
 /*
   Get All Chats não é o use case certo, pois não queremos que um contato veja a conversa de todos os contatos.
@@ -32,6 +33,9 @@ export function ChatPage({
 
   const navigate = useNavigate();
 
+  const [notificationState, setNotificationState] = useState<null | string>(
+    null,
+  );
   const [isMobilePageMode, setIsMobilePageMode] = useState<boolean>(false);
   const [loggedContactDataState, setLoggedContactDataState] =
     useState<IContactQuery | null>(null);
@@ -43,7 +47,6 @@ export function ChatPage({
   );
 
   // Nem valeu tanto a pena criar um context aqui, só confundi, deixando a questão, porque ?
-
   useEffect(() => {
     socket.emit("message_join", loggedContactDataState?.chats);
     setTimeout(() => {
@@ -55,8 +58,13 @@ export function ChatPage({
     }, 300);
 
     // Se estiver na lista de contatos, irá receber.
+    socket.off("contactGetOn");
     socket.on("contactGetOn", (contactName: string) => {
-      alert(`${contactName} está online`);
+      setNotificationState(contactName);
+
+      setTimeout(() => {
+        setNotificationState(null);
+      }, 2000);
     });
   }, [loggedContactDataState]);
 
@@ -103,6 +111,8 @@ export function ChatPage({
       <header>
         <ChatPageNavBarComponent />
       </header>
+
+      <OnlineContactNotificationComponent contactName={notificationState} />
 
       {isMobilePageMode ? (
         <div className="ChatPage__content">

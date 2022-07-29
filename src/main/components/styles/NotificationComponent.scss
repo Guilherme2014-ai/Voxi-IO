@@ -1,0 +1,27 @@
+@import "../../style/variables";
+
+.notificationArea {
+    position: absolute;
+    top: 80px;
+    right: 10px;
+    transition: all ease-in-out 1s;
+    z-index: 4;
+
+    .notification {
+        display: flex;
+
+        justify-content: center;
+        text-align: center;
+        align-items: center;
+
+        background-color: $mainColor;
+        color: white;
+
+        width: 200px;
+        height: 60px;
+
+        font-size: 0.7rem;
+
+        border-radius: 8px;
+    }
+}
