@@ -1,10 +1,18 @@
-import React from "react";
+import React, { Dispatch, useEffect } from "react";
+
+// Components
 import Avatar from "@mui/material/Avatar";
+
+// Interfaces
+import { IMessageQuery } from "../../interfaces/queries/IMessageQuery";
 import { IContactQuery } from "../../interfaces/queries/IContactQuery";
 
-import "./styles/contactMessageComponent.scss";
+// Factories
 import { contactSenderDataByUsername } from "../../factories/contactSenderDataByUsername";
-import { IMessageQuery } from "../../interfaces/queries/IMessageQuery";
+
+// CSS
+import "./styles/contactMessageComponent.scss";
+import { socket } from "../libs/SocketIO";
 
 export function ContactMessageComponent({
   contactLogged,

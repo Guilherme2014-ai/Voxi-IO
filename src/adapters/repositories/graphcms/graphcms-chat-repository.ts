@@ -16,8 +16,6 @@ export class GraphcmsChatRepository implements IChatRepository {
     contactReceiverNumber: number | null,
     contactReceiverUsername: string | null,
   ): Promise<IChatQuery> {
-    console.log(contactReceiverNumber, contactReceiverUsername);
-
     const mutationVariable = contactReceiverNumber
       ? { contactReceiverNumber }
       : { contactReceiverUsername };

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { getSendMessageUsecaseContextValue } from "../../adapters/context/SendMessageUsecase";
 import { IContactQuery } from "../../interfaces/queries/IContactQuery";
+import { IMessageQuery } from "../../interfaces/queries/IMessageQuery";
 import { ICreateNewMessage } from "../../interfaces/usecases/ICreateNewMessage";
+import { socket } from "../libs/SocketIO";
 import MessageClips from "./icons/MessageClips";
 import MessageSendIcon from "./icons/MessageSendIcon";
 
@@ -10,9 +12,11 @@ import "./styles/MessageInputComponent.scss";
 export function MessageInputComponent({
   selectedChatId,
   loggedContactDataState,
+  addSelfMessageToRealtimeMessages,
 }: {
   selectedChatId: string;
   loggedContactDataState: IContactQuery;
+  addSelfMessageToRealtimeMessages: (message: IMessageQuery) => void;
 }) {
   const sendMessageUsecase =
     getSendMessageUsecaseContextValue() as ICreateNewMessage;
@@ -33,9 +37,18 @@ export function MessageInputComponent({
     setMessageTextFieldState("");
 
     try {
+      const contactSenderId = loggedContactDataState.id;
+      const messageData: IMessageQuery = {
+        contactSenderId,
+        text: textMessage,
+      };
+
+      addSelfMessageToRealtimeMessages(messageData);
+      socket.emit("new_message", selectedChatId, messageData);
+
       await sendMessageUsecase.Handle(
         textMessage,
-        loggedContactDataState.id,
+        contactSenderId,
         selectedChatId,
       );
     } catch (e) {

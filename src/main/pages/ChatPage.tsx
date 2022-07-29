@@ -1,6 +1,7 @@
 import React, { Dispatch, useEffect, useState } from "react";
 import { NavigateFunction, useNavigate, useParams } from "react-router";
 import { SendMessageUsecaseContext } from "../../adapters/context/SendMessageUsecase";
+import { socket } from "../libs/SocketIO";
 
 // Interfaces
 import { IChatPage } from "../../interfaces/components/IChatPage";
@@ -42,6 +43,22 @@ export function ChatPage({
   );
 
   // Nem valeu tanto a pena criar um context aqui, só confundi, deixando a questão, porque ?
+
+  useEffect(() => {
+    socket.emit("message_join", loggedContactDataState?.chats);
+    setTimeout(() => {
+      socket.emit(
+        "contactConnect",
+        loggedContactDataState?.name,
+        loggedContactDataState?.chats,
+      );
+    }, 300);
+
+    // Se estiver na lista de contatos, irá receber.
+    socket.on("contactGetOn", (contactName: string) => {
+      alert(`${contactName} está online`);
+    });
+  }, [loggedContactDataState]);
 
   useEffect(() => {
     setPagePriority();
