@@ -44,7 +44,12 @@ export function MessageInputComponent({
       };
 
       addSelfMessageToRealtimeMessages(messageData);
-      socket.emit("new_message", selectedChatId, messageData);
+      socket.emit(
+        "new_message",
+        selectedChatId,
+        messageData,
+        loggedContactDataState.name,
+      );
 
       await sendMessageUsecase.Handle(
         textMessage,

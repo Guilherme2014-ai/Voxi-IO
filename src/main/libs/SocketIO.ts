@@ -1,3 +1,8 @@
 import io from "socket.io-client";
 
-export const socket = io("https://voxiio.herokuapp.com");
+const urls = {
+  heroku: "https://voxiio.herokuapp.com",
+  local: "http://localhost",
+};
+
+export const socket = io(urls.heroku);

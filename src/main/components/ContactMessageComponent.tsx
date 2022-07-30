@@ -48,7 +48,7 @@ export function ContactMessageComponent({
           ...styleConfig,
         }}
       >
-        {contactSender ? (
+        {contactSender && (
           <>
             <Avatar
               src={contactSender.profile_picture_url}
@@ -66,8 +66,6 @@ export function ContactMessageComponent({
               <p className="contactMessage__content">{message.text}</p>
             </div>
           </>
-        ) : (
-          <span>Error</span>
         )}
       </div>
     </div>

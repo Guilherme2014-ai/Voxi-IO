@@ -14,6 +14,8 @@ import { IMessageQuery } from "../../interfaces/queries/IMessageQuery";
 
 // CSS
 import "./styles/ChatSubPage.scss";
+import { BrowserNotificator } from "../adapters/notifications/BrowserNotificator";
+const browserNotificator = new BrowserNotificator();
 
 export function ChatSubPage({
   loggedContactDataStateProp,
@@ -117,6 +119,7 @@ function useListenNewMessages(
     function onMessageListener() {
       socket.off("message_receive"); // Para de ouvir tal evento
       socket.on("message_receive", (messageJustReceived: IMessageQuery) => {
+        browserNotificator.sendcontactMessageNotification("Ricardin do pneu");
         setRealTimeMessagesState((oldState) => [
           ...oldState,
           messageJustReceived,
