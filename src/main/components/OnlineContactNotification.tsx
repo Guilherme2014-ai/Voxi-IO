@@ -11,7 +11,7 @@ export function OnlineContactNotificationComponent({
     <div
       className="notificationArea"
       style={{
-        transform: contactName ? "translateX(0)" : "translateX(250px)",
+        display: contactName ? "inherit" : "none",
       }}
     >
       <div className="notification">
