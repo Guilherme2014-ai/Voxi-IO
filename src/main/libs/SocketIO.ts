@@ -5,4 +5,4 @@ const urls = {
   local: "http://localhost",
 };
 
-export const socket = io(urls.heroku);
+export const socket = io(urls.local);

@@ -2,18 +2,21 @@ import React, { Dispatch, useEffect, useState } from "react";
 import { NavigateFunction, useNavigate, useParams } from "react-router";
 import { SendMessageUsecaseContext } from "../../adapters/context/SendMessageUsecase";
 import { socket } from "../libs/SocketIO";
+import { config } from "../../config";
+
+// Components
+import { OnlineContactNotificationComponent } from "../components/OnlineContactNotification";
+import { ChatPageNavBarComponent } from "../components/ChatPageNavBarComponent";
+import { ChatListSubPage } from "../subPages/ChatListSubPage";
+import { ChatSubPage } from "../subPages/ChatSubPage";
 
 // Interfaces
 import { IChatPage } from "../../interfaces/components/IChatPage";
 import { IContactQuery } from "../../interfaces/queries/IContactQuery";
 import { IFindContactByUsername } from "../../interfaces/usecases/IFindContactByUsername";
-import { ChatPageNavBarComponent } from "../components/ChatPageNavBarComponent";
-import { ChatListSubPage } from "../subPages/ChatListSubPage";
-import { ChatSubPage } from "../subPages/ChatSubPage";
 
 // CSS
 import "./styles/ChatPage.scss";
-import { OnlineContactNotificationComponent } from "../components/OnlineContactNotification";
 
 /*
   Get All Chats não é o use case certo, pois não queremos que um contato veja a conversa de todos os contatos.
@@ -81,6 +84,22 @@ export function ChatPage({
       setIsMobilePageMode(underLimit);
     }
   }, []);
+
+  /*
+  useEffect(() => {
+    console.log("pitu");
+    const rc = new RTCPeerConnection(config.iceServers);
+
+    const dc = rc.createDataChannel("channel");
+
+    rc.createOffer()
+      .then((offer) => rc.setLocalDescription(offer))
+      .then(() =>
+        console.log(
+          `Set Sucessfully -> Offer: ${JSON.stringify(rc.localDescription)}`,
+        ),
+      );
+  }, [loggedContactDataState]);*/
 
   const subPages = {
     chatList: (

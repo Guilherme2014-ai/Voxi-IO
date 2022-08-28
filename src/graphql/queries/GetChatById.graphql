@@ -1,5 +1,6 @@
 query getChatByIDQuery($chat_id: ID!) {
     chat(where: {id: $chat_id}) {
+        id
         contacts {
             id
             name

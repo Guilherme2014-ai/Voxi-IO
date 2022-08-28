@@ -2,6 +2,14 @@ import mockedEnv from "../mockedEnv";
 
 export const config = {
   ApiContentUrl: mockedEnv.VITE_API_CONTENT_URL || "What are you looking for ?",
+  iceServers: {
+    iceServers: [
+      {
+        urls: ["stun:stun.11google.com:19302", "stun:stun2.1.google.com:19302"],
+      },
+    ],
+    iceCandidatePoolSize: 10,
+  },
   firebaseConfig: {
     apiKey: mockedEnv.VITE_API_FIREBASECONNECTIONAPI,
     authDomain: mockedEnv.VITE_API_FIREBASECONNECTIONAUTHDOMAIN,

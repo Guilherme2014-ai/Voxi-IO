@@ -1,9 +1,9 @@
 export class BrowserNotificator {
-  async sendcontactMessageNotification(contactName: string) {
+  async sendcontactMessageNotification(text: string) {
     if (await this.getPermission())
       console.log(
         new Notification("New Message", {
-          body: `${contactName} sent you a message !`,
+          body: text,
         }),
       );
   }
