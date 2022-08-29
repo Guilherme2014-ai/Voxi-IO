@@ -7,7 +7,6 @@ import { MessageInputComponent } from "../components/MessageInputComponent";
 import { socket } from "../libs/SocketIO";
 
 // Adapters
-import { Caller } from "../adapters/Caller";
 import { BrowserNotificator } from "../adapters/notifications/BrowserNotificator";
 
 // Interfaces
@@ -18,6 +17,7 @@ import { IMessageQuery } from "../../interfaces/queries/IMessageQuery";
 
 // CSS
 import "./styles/ChatSubPage.scss";
+import { useNavigate } from "react-router";
 
 // Instances
 const browserNotificator = new BrowserNotificator();
@@ -35,8 +35,8 @@ export function ChatSubPage({
   selectedChatId: string | undefined;
 }) {
   // useEffect duplicado
+  const navigate = useNavigate();
 
-  const [onCallState, setOnCallState] = useState<boolean>(false);
   const [loggedContactDataState, setLoggedContactDataStateProp] =
     loggedContactDataStateProp;
   const [selectedChatDataState, setSelectedChatDataState] =
@@ -51,7 +51,6 @@ export function ChatSubPage({
     findChatByIDUsecase,
     selectedChatId as string,
   );
-
   useListenNewMessages(setRealTimeMessagesState);
 
   function addSelfMessageToRealtimeMessages(message: IMessageQuery) {
@@ -62,93 +61,54 @@ export function ChatSubPage({
     <main>
       {selectedChatDataState && loggedContactDataState && selectedChatId ? (
         <>
-          {!onCallState ? (
-            <>
-              <div className="chatContent__main__chatHeader">
-                <div className="coverBack"></div>
-                <ContactInfoComponent selectedChat={selectedChatDataState} />
-                <button
-                  onClick={() =>
-                    call(
-                      loggedContactDataState,
-                      selectedChatDataState,
-                      setOnCallState,
-                    )
-                  }
-                >
-                  Call
-                </button>
-                <br />
-                <hr />
-              </div>
-              <div className="chatContent__main__chatContent">
-                {selectedChatDataState.messages.map((message) => (
-                  <ContactMessageComponent
-                    key={idUniqueV2()}
-                    contactLogged={loggedContactDataState}
-                    chatContacts={selectedChatDataState.contacts}
-                    message={message}
-                  />
-                ))}
-                {
-                  // Pode trocar o id pelo proprio id da mensagem
-                  realTimeMessagesState.map((message) => (
-                    <ContactMessageComponent
-                      key={idUniqueV2()}
-                      contactLogged={loggedContactDataState}
-                      chatContacts={selectedChatDataState.contacts}
-                      message={message}
-                    />
-                  ))
-                }
-              </div>
-
-              <MessageInputComponent
-                selectedChatId={selectedChatId}
-                addSelfMessageToRealtimeMessages={
-                  addSelfMessageToRealtimeMessages
-                }
-                loggedContactDataState={loggedContactDataState}
+          <div className="chatContent__main__chatHeader">
+            <div className="coverBack"></div>
+            <ContactInfoComponent selectedChat={selectedChatDataState} />
+            <button
+              onClick={() => {
+                navigate(`/call/${selectedChatDataState.id}/true`);
+              }}
+            >
+              Call
+            </button>
+            <br />
+            <hr />
+          </div>
+          <div className="chatContent__main__chatContent">
+            {selectedChatDataState.messages.map((message) => (
+              <ContactMessageComponent
+                key={idUniqueV2()}
+                contactLogged={loggedContactDataState}
+                chatContacts={selectedChatDataState.contacts}
+                message={message}
               />
-            </>
-          ) : (
-            <h1>Chamada</h1>
-          )}
+            ))}
+            {
+              // Pode trocar o id pelo proprio id da mensagem
+              realTimeMessagesState.map((message) => (
+                <ContactMessageComponent
+                  key={idUniqueV2()}
+                  contactLogged={loggedContactDataState}
+                  chatContacts={selectedChatDataState.contacts}
+                  message={message}
+                />
+              ))
+            }
+          </div>
+
+          <MessageInputComponent
+            selectedChatId={selectedChatId}
+            addSelfMessageToRealtimeMessages={addSelfMessageToRealtimeMessages}
+            loggedContactDataState={loggedContactDataState}
+          />
         </>
       ) : (
         <div>
-          <video autoPlay playsInline controls={false} id="webcam"></video>
+          <span>Loading...</span>
         </div>
       )}
     </main>
   );
-}
-
-async function call(
-  loggadContact: IContactQuery,
-  selectedChatData: IChatQuery | null,
-  setOnCallState: React.Dispatch<React.SetStateAction<boolean>>,
-) {
-  try {
-    if (selectedChatData) {
-      setOnCallState(true);
-
-      const webCamElement = document.getElementById(
-        "webcam",
-      ) as HTMLVideoElement;
-
-      const caller = new Caller(selectedChatData.id);
-
-      await caller.call(loggadContact.name);
-      const localStream = await caller.setup();
-
-      webCamElement.srcObject = localStream;
-    } else {
-      throw new Error("Something went wrong !");
-    }
-  } catch (e) {
-    console.error(e);
-  }
 }
 
 function useLoadSelectedChat(

@@ -3,6 +3,7 @@ import React from "react";
 // Dependencies
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import { getProviderValue } from "../adapters/context/UsecasesContext";
+import { CallPage } from "./pages/CallPage";
 
 // Components
 import { ChatPage } from "./pages/ChatPage";
@@ -34,6 +35,14 @@ function App() {
                 createNewContactUsecase={createNewContactUsecase}
                 userAuthenticator={userAuthenticator}
                 findUserByUsernameUsename={findContactByUsernameUsecase}
+              />
+            }
+          />
+          <Route
+            path="/call/:chat_id/:call"
+            element={
+              <CallPage
+                findContactByUsernameUsecase={findContactByUsernameUsecase}
               />
             }
           />

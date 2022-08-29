@@ -1,8 +1,10 @@
-import React, { Dispatch, useEffect, useState } from "react";
-import { NavigateFunction, useNavigate, useParams } from "react-router";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router";
 import { SendMessageUsecaseContext } from "../../adapters/context/SendMessageUsecase";
 import { socket } from "../libs/SocketIO";
-import { config } from "../../config";
+
+// Hooks
+import { useLoadLoggedContactData } from "../hooks/useLoadLoggedContactDataHook";
 
 // Components
 import { OnlineContactNotificationComponent } from "../components/OnlineContactNotification";
@@ -13,7 +15,6 @@ import { ChatSubPage } from "../subPages/ChatSubPage";
 // Interfaces
 import { IChatPage } from "../../interfaces/components/IChatPage";
 import { IContactQuery } from "../../interfaces/queries/IContactQuery";
-import { IFindContactByUsername } from "../../interfaces/usecases/IFindContactByUsername";
 
 // CSS
 import "./styles/ChatPage.scss";
@@ -147,35 +148,4 @@ export function ChatPage({
       )}
     </SendMessageUsecaseContext.Provider>
   );
-}
-
-function useLoadLoggedContactData(
-  setLoggedContactDataState: Dispatch<
-    React.SetStateAction<IContactQuery | null>
-  >,
-  navigate: NavigateFunction,
-  findContactByUsernameUsecase: IFindContactByUsername,
-) {
-  useEffect(() => {
-    async function loadLoggedContact() {
-      try {
-        const userLoggedUsername = localStorage.getItem("contact_username"); // Esta informação será tirada do localStorage
-
-        if (userLoggedUsername) {
-          const loggedContact = await findContactByUsernameUsecase.Handler(
-            userLoggedUsername,
-          );
-
-          setLoggedContactDataState(loggedContact);
-        } else {
-          navigate("/");
-        }
-      } catch (e) {
-        alert(e);
-        console.error(e);
-      }
-    }
-
-    loadLoggedContact();
-  }, []);
 }
