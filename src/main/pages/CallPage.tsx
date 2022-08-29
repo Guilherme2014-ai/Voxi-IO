@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { IChatQuery } from "../../interfaces/queries/IChatQuery";
 
 // Adapters
+import { StreamConnection } from "../adapters/StreamConnection";
 
 // Interface
 import { IContactQuery } from "../../interfaces/queries/IContactQuery";
 import { IFindContactByUsername } from "../../interfaces/usecases/IFindContactByUsername";
-import { Caller } from "../adapters/Caller";
 
 // Hooks
 import { useLoadLoggedContactData } from "../hooks/useLoadLoggedContactDataHook";
@@ -43,21 +42,31 @@ export function CallPage({
   return (
     <div>
       <h1>Call Page</h1>
-      <video autoPlay playsInline id="webcam"></video>
+      <video autoPlay playsInline id="local__webcam"></video>
+      <video autoPlay playsInline id="remote__webcam"></video>
     </div>
   );
 }
 
 async function makeCall(loggadContact: IContactQuery, selectedChatID: string) {
   try {
-    const webCamElement = document.getElementById("webcam") as HTMLVideoElement;
+    const localWebCamElement = document.getElementById(
+      "local__webcam",
+    ) as HTMLVideoElement;
+    const remoteWebCamElement = document.getElementById(
+      "remote__webcam",
+    ) as HTMLVideoElement;
 
-    const caller = new Caller(selectedChatID);
+    const streamConnection = new StreamConnection(selectedChatID);
+    await streamConnection.addRTCTracks();
+    await streamConnection.setVideoSrcObject(
+      localWebCamElement,
+      remoteWebCamElement,
+    );
 
-    await caller.call(loggadContact.name);
-    const localStream = await caller.setup();
+    await streamConnection.call(loggadContact.name);
 
-    webCamElement.srcObject = localStream;
+    // webCamElement.srcObject = localStream;
   } catch (e) {
     console.error(e);
   }

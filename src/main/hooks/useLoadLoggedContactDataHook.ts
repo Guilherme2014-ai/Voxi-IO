@@ -1,5 +1,7 @@
 import { Dispatch, useEffect } from "react";
 import { NavigateFunction } from "react-router";
+
+// Interfaces
 import { IContactQuery } from "../../interfaces/queries/IContactQuery";
 import { IFindContactByUsername } from "../../interfaces/usecases/IFindContactByUsername";
 
