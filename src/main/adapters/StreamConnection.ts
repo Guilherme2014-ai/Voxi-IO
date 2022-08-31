@@ -1,25 +1,26 @@
+/*
+Diferença entre comunicão e apresentação, uma vez que apresentação já configurada o fluxo dependerá apenas da conexão
+*/
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { socket } from "../libs/SocketIO";
 import { config } from "../../config";
+import { ICallData } from "../../interfaces/ICallData";
 
 // Mudar
 export class StreamConnection {
   constructor(private chatID: string) {}
   private rc = new RTCPeerConnection(config.iceServers);
-  private localStream: any;
-  private remoteStream: any;
 
-  // listen
-
-  async addRTCTracks() {
+  async setStreams(
+    setLocalStreamState: (stream: MediaStream) => void,
+    setRemoteStreamState: (stream: MediaStream) => void,
+  ) {
     const localStream = await navigator.mediaDevices.getUserMedia({
       audio: true,
       video: true,
     });
     const remoteStream = new MediaStream();
-
-    this.localStream = localStream;
-    this.remoteStream = remoteStream;
 
     localStream.getTracks().forEach((track) => {
       this.rc.addTrack(track, localStream);
@@ -29,31 +30,57 @@ export class StreamConnection {
       event.streams[0].getTracks().forEach((track) => {
         console.log("Extern track: ", track);
         remoteStream.addTrack(track);
+        setRemoteStreamState(remoteStream);
       });
     };
+
+    setLocalStreamState(localStream);
   }
 
   setVideoSrcObject(
     localStreamVideoElement: HTMLVideoElement,
     remoteStreamVideoElement: HTMLVideoElement,
+    localStreamState: MediaStream | null,
+    remoteStreamState: MediaStream | null,
   ) {
-    console.log(this.localStream);
-
-    localStreamVideoElement.srcObject = this.localStream;
-    remoteStreamVideoElement.srcObject = this.remoteStream;
+    localStreamVideoElement.srcObject = localStreamState;
+    remoteStreamVideoElement.srcObject = remoteStreamState;
   }
 
   async call(callerName: string) {
     const offer = await this.rc.createOffer();
-    const callData = {
+    this.rc.setLocalDescription(offer);
+
+    const callData: ICallData = {
       chatID: this.chatID,
       callerName,
-      offer: JSON.stringify(offer),
+      offer,
     };
 
     socket.emit("makeCall", callData);
   }
 
   // declineCall() {}
-  // acceptCall() {}
+  async acceptCall() {
+    socket.on("call", async (call: ICallData) => {
+      console.log("Someone Calling...", call);
+
+      await this.rc.setRemoteDescription(call.offer);
+      const callAnswer = await this.rc.createAnswer();
+
+      const answer = {
+        chatID: call.chatID,
+        callAnswer,
+      };
+
+      socket.emit("acceptCall", answer);
+    });
+  }
+
+  async handleCalls() {
+    // dps que a call for aceita --> espera da answer
+    socket.on("acceptedCall", async (callAnswer: RTCSessionDescriptionInit) => {
+      await this.rc.setRemoteDescription(callAnswer);
+    });
+  }
 }
