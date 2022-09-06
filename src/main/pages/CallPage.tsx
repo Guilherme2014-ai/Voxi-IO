@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
+// Usecases
+import { joinRoom } from "../__usecases/join_rooms";
+
 // Adapters
 import { StreamConnection } from "../adapters/StreamConnection";
 
@@ -27,24 +30,20 @@ export function CallPage({
     chat_id: string;
     call: string;
   }>();
-  const call = callParam == "true";
+  const isCallMaker = callParam == "true";
 
+  useSetCallMode(
+    loggedContactDataState,
+    LocalStreamState,
+    RemoteStreamState,
+    isCallMaker,
+    chat_id as string,
+  );
   useLoadLoggedContactData(
     setLoggedContactDataState,
     navigate,
     findContactByUsernameUsecase,
   );
-
-  useEffect(() => {
-    if (loggedContactDataState) {
-      const streamConnection = new StreamConnection(chat_id as string);
-      setup(streamConnection, LocalStreamState, RemoteStreamState);
-
-      call
-        ? useMakeCallMode(streamConnection, loggedContactDataState)
-        : useReceiveCallMode(streamConnection);
-    }
-  }, [loggedContactDataState, LocalStreamState[0]]);
 
   return (
     <div>
@@ -65,6 +64,7 @@ async function setup(
     MediaStream | null,
     React.Dispatch<React.SetStateAction<MediaStream | null>>,
   ],
+  chat_id: string,
 ) {
   try {
     const localWebCamElement = document.getElementById(
@@ -84,6 +84,9 @@ async function setup(
       setRemoteStreamState(stream);
     }
 
+    const chatIds = [{ id: chat_id }];
+    joinRoom(chatIds);
+
     if (!LocalStream[0])
       await streamConnection.setStreams(
         setLocalStreamFunc,
@@ -101,8 +104,37 @@ async function setup(
   }
 }
 
-async function useReceiveCallMode(streamConnection: StreamConnection) {
-  await streamConnection.acceptCall();
+async function useSetCallMode(
+  loggedContactDataState: IContactQuery | null,
+  LocalStreamState: [
+    MediaStream | null,
+    React.Dispatch<React.SetStateAction<MediaStream | null>>,
+  ],
+  RemoteStreamState: [
+    MediaStream | null,
+    React.Dispatch<React.SetStateAction<MediaStream | null>>,
+  ],
+  isCallMaker: boolean,
+  chat_id: string,
+) {
+  useEffect(() => {
+    if (loggedContactDataState) {
+      const streamConnection = new StreamConnection(chat_id);
+      setup(streamConnection, LocalStreamState, RemoteStreamState, chat_id); // Bobisse
+
+      isCallMaker
+        ? useMakeCallMode(streamConnection, loggedContactDataState)
+        : useReceiveCallMode(streamConnection, loggedContactDataState);
+    }
+  }, [loggedContactDataState, LocalStreamState[0]]);
+}
+
+async function useReceiveCallMode(
+  streamConnection: StreamConnection,
+  loggedContactDataState: IContactQuery | null,
+) {
+  if (loggedContactDataState)
+    await streamConnection.acceptCall(loggedContactDataState.name);
 }
 
 async function useMakeCallMode(

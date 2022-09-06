@@ -61,17 +61,18 @@ export class StreamConnection {
   }
 
   // declineCall() {}
-  async acceptCall() {
+  async acceptCall(callReceiverName: string) {
     socket.on("call", async (call: ICallData) => {
-      console.log("Someone Calling...", call);
-
       await this.rc.setRemoteDescription(call.offer);
       const callAnswer = await this.rc.createAnswer();
 
-      const answer = {
-        chatID: call.chatID,
-        callAnswer,
+      const answer: ICallData = {
+        chatID: call.chatID, // Redundante
+        callerName: callReceiverName,
+        offer: callAnswer,
       };
+
+      console.log(answer);
 
       socket.emit("acceptCall", answer);
     });
@@ -79,8 +80,9 @@ export class StreamConnection {
 
   async handleCalls() {
     // dps que a call for aceita --> espera da answer
-    socket.on("acceptedCall", async (callAnswer: RTCSessionDescriptionInit) => {
-      await this.rc.setRemoteDescription(callAnswer);
+    socket.on("acceptedCall", async (callAnswer: ICallData) => {
+      console.log(callAnswer);
+      // await this.rc.setRemoteDescription(callAnswer);
     });
   }
 }

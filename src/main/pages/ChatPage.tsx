@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { SendMessageUsecaseContext } from "../../adapters/context/SendMessageUsecase";
+
+// Libs
 import { socket } from "../libs/SocketIO";
+
+// Adapters
+import { SendMessageUsecaseContext } from "../../adapters/context/SendMessageUsecase";
 
 // Hooks
 import { useLoadLoggedContactData } from "../hooks/useLoadLoggedContactDataHook";
@@ -52,24 +56,30 @@ export function ChatPage({
 
   // Nem valeu tanto a pena criar um context aqui, só confundi, deixando a questão, porque ?
   useEffect(() => {
-    socket.emit("message_join", loggedContactDataState?.chats);
-    setTimeout(() => {
-      socket.emit(
-        "contactConnect",
-        loggedContactDataState?.name,
-        loggedContactDataState?.chats,
-      );
-    }, 300);
-
-    // Se estiver na lista de contatos, irá receber.
-    socket.off("contactGetOn");
-    socket.on("contactGetOn", (contactName: string) => {
-      setNotificationState(contactName);
+    if (loggedContactDataState?.chats) {
+      const chats_id = [...loggedContactDataState.chats].map((chat) => ({
+        id: chat.id,
+      }));
+      socket.emit("join_chats", chats_id);
 
       setTimeout(() => {
-        setNotificationState(null);
-      }, 2000);
-    });
+        socket.emit(
+          "contactConnect",
+          loggedContactDataState?.name,
+          loggedContactDataState?.chats,
+        );
+      }, 300);
+
+      // Se estiver na lista de contatos, irá receber.
+      socket.off("contactGetOn");
+      socket.on("contactGetOn", (contactName: string) => {
+        setNotificationState(contactName);
+
+        setTimeout(() => {
+          setNotificationState(null);
+        }, 2000);
+      });
+    }
   }, [loggedContactDataState]);
 
   useEffect(() => {
