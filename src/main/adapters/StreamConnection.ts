@@ -27,8 +27,9 @@ export class StreamConnection {
     });
 
     this.rc.ontrack = (event) => {
+      console.log("Sinal de Vida");
       event.streams[0].getTracks().forEach((track) => {
-        console.log("Extern track: ", track);
+        console.log("External track: ", track);
         remoteStream.addTrack(track);
         setRemoteStreamState(remoteStream);
       });
@@ -49,7 +50,15 @@ export class StreamConnection {
 
   async call(callerName: string) {
     const offer = await this.rc.createOffer();
-    this.rc.setLocalDescription(offer);
+    await this.rc.setLocalDescription(offer);
+
+    this.rc.onicecandidate = (event) => {
+      event.candidate &&
+        socket.emit("iceCandidate", {
+          chatID: this.chatID,
+          iceCandidate: event.candidate.toJSON(),
+        });
+    };
 
     const callData: ICallData = {
       chatID: this.chatID,
@@ -58,13 +67,34 @@ export class StreamConnection {
     };
 
     socket.emit("makeCall", callData);
+
+    socket.off("onIceCandidate");
+    socket.on("onIceCandidate", async (iceCandidate) => {
+      const candidate = new RTCIceCandidate(iceCandidate);
+      await this.rc.addIceCandidate(candidate);
+    });
   }
 
-  // declineCall() {}
   async acceptCall(callReceiverName: string) {
+    socket.off("call");
+    socket.off("onIceCandidate");
+
     socket.on("call", async (call: ICallData) => {
-      await this.rc.setRemoteDescription(call.offer);
+      console.log("aqui");
+
+      this.rc.onicecandidate = (event) => {
+        event.candidate &&
+          socket.emit("iceCandidate", {
+            chatID: this.chatID,
+            iceCandidate: event.candidate.toJSON(),
+          });
+      };
+
+      const remoteDescriptionSession = new RTCSessionDescription(call.offer);
+
+      await this.rc.setRemoteDescription(remoteDescriptionSession);
       const callAnswer = await this.rc.createAnswer();
+      await this.rc.setLocalDescription(callAnswer);
 
       const answer: ICallData = {
         chatID: call.chatID, // Redundante
@@ -72,17 +102,32 @@ export class StreamConnection {
         offer: callAnswer,
       };
 
-      console.log(answer);
-
       socket.emit("acceptCall", answer);
+    });
+    socket.on("onIceCandidate", async (iceCandidate) => {
+      const candidate = new RTCIceCandidate(iceCandidate);
+      await this.rc.addIceCandidate(candidate);
     });
   }
 
   async handleCalls() {
     // dps que a call for aceita --> espera da answer
+    let hasCalled = false;
+    socket.off("acceptedCall");
+    socket.off("onIceCandidates");
+
+    socket.on("onIceCandidates", async (iceCandidate) => {
+      const candidate = new RTCIceCandidate(iceCandidate);
+      console.log(candidate);
+      await this.rc.addIceCandidate(candidate);
+    });
     socket.on("acceptedCall", async (callAnswer: ICallData) => {
-      console.log(callAnswer);
-      // await this.rc.setRemoteDescription(callAnswer);
+      if (!hasCalled) {
+        const remoteDescription = new RTCSessionDescription(callAnswer.offer);
+        await this.rc.setRemoteDescription(remoteDescription);
+
+        hasCalled = true;
+      }
     });
   }
 }

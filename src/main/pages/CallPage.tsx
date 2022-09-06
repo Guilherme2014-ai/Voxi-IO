@@ -14,6 +14,8 @@ import { IFindContactByUsername } from "../../interfaces/usecases/IFindContactBy
 // Hooks
 import { useLoadLoggedContactData } from "../hooks/useLoadLoggedContactDataHook";
 
+let once = false;
+
 export function CallPage({
   findContactByUsernameUsecase,
 }: {
@@ -52,6 +54,33 @@ export function CallPage({
       <video autoPlay playsInline id="remote__webcam"></video>
     </div>
   );
+}
+
+async function useSetCallMode(
+  loggedContactDataState: IContactQuery | null,
+  LocalStreamState: [
+    MediaStream | null,
+    React.Dispatch<React.SetStateAction<MediaStream | null>>,
+  ],
+  RemoteStreamState: [
+    MediaStream | null,
+    React.Dispatch<React.SetStateAction<MediaStream | null>>,
+  ],
+  isCallMaker: boolean,
+  chat_id: string,
+) {
+  useEffect(() => {
+    if (loggedContactDataState) {
+      const streamConnection = new StreamConnection(chat_id);
+      setup(streamConnection, LocalStreamState, RemoteStreamState, chat_id); // Bobisse
+
+      setTimeout(() => {
+        isCallMaker
+          ? useMakeCallMode(streamConnection, loggedContactDataState)
+          : useReceiveCallMode(streamConnection, loggedContactDataState);
+      }, 1000);
+    }
+  }, [loggedContactDataState, LocalStreamState[0]]);
 }
 
 async function setup(
@@ -104,46 +133,30 @@ async function setup(
   }
 }
 
-async function useSetCallMode(
-  loggedContactDataState: IContactQuery | null,
-  LocalStreamState: [
-    MediaStream | null,
-    React.Dispatch<React.SetStateAction<MediaStream | null>>,
-  ],
-  RemoteStreamState: [
-    MediaStream | null,
-    React.Dispatch<React.SetStateAction<MediaStream | null>>,
-  ],
-  isCallMaker: boolean,
-  chat_id: string,
-) {
-  useEffect(() => {
-    if (loggedContactDataState) {
-      const streamConnection = new StreamConnection(chat_id);
-      setup(streamConnection, LocalStreamState, RemoteStreamState, chat_id); // Bobisse
-
-      isCallMaker
-        ? useMakeCallMode(streamConnection, loggedContactDataState)
-        : useReceiveCallMode(streamConnection, loggedContactDataState);
-    }
-  }, [loggedContactDataState, LocalStreamState[0]]);
-}
-
 async function useReceiveCallMode(
   streamConnection: StreamConnection,
   loggedContactDataState: IContactQuery | null,
 ) {
-  if (loggedContactDataState)
-    await streamConnection.acceptCall(loggedContactDataState.name);
+  try {
+    if (once == false && loggedContactDataState) {
+      await streamConnection.acceptCall(loggedContactDataState.name);
+    }
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 async function useMakeCallMode(
   streamConnection: StreamConnection,
-  loggadContact: IContactQuery,
+  loggedContactDataState: IContactQuery | null,
 ) {
   try {
-    await streamConnection.call(loggadContact.name);
-    streamConnection.handleCalls();
+    if (once == false && loggedContactDataState) {
+      await streamConnection.call(loggedContactDataState.name);
+      streamConnection.handleCalls();
+
+      once = true;
+    }
   } catch (e) {
     console.error(e);
   }
